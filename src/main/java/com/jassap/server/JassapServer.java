@@ -16,8 +16,18 @@
  */
 package com.jassap.server;
 
+import java.awt.EventQueue;
+
+import com.jassap.server.ui.ServerUI;
+
 public class JassapServer {
+	public static ServerUI ui;
+	
 	public static void main(String[] args) {
-		System.out.println("Hello world!");
+		EventQueue.invokeLater(new Runnable() {
+            public void run() {
+            	ui = new ServerUI();
+            }
+        });
 	}
 }
