@@ -21,4 +21,8 @@ public abstract class Server implements Runnable {
 	public void start() {
 		
 	}
+	
+	public void stop() {
+		
+	}
 }
