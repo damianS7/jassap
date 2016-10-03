@@ -68,16 +68,20 @@ public class StatsBar extends JPanel {
 		add(status, "cell 0 0");
 	}
 	
-	public void setStatus() {
-		
+	public void setStatus(String s) {
+		if(s.equals("Online")) {
+			status.setText(s);
+		} else {
+			status.setText("Offline");
+		}
 	}
 	
-	public void setUsers() {
-		
+	public void setUsers(int n) {
+		users.setText(Integer.toString(n));
 	}
 	
-	public void setUptime() {
-		
+	public void setUptime(String uptime) {
+		//new Thread
 	}
 	
 }

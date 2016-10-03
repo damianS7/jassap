@@ -16,24 +16,13 @@
  */
 package com.jassap.server;
 
-import java.awt.EventQueue;
-
-import com.jassap.server.ui.ServerUI;
-
-public class JassapServer {
-	public static final String appPath = "jassap-server";
-	public static ServerUI ui;
-	public static Server server;
-	public static Config config;
+public class Config {
 	
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-            public void run() {
-            	ui = new ServerUI();
-            }
-        });
-		
-		server = new ChatServer();
-		config = new Config();
+	public String getAddress() {
+		return "127.0.0.1";
+	}
+	
+	public int getPort() {
+		return 7777;
 	}
 }

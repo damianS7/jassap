@@ -14,26 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.jassap.server;
+package com.jassap.chat;
 
-import java.awt.EventQueue;
+public class User {
 
-import com.jassap.server.ui.ServerUI;
-
-public class JassapServer {
-	public static final String appPath = "jassap-server";
-	public static ServerUI ui;
-	public static Server server;
-	public static Config config;
-	
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-            public void run() {
-            	ui = new ServerUI();
-            }
-        });
-		
-		server = new ChatServer();
-		config = new Config();
-	}
 }

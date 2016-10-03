@@ -14,26 +14,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.jassap.server;
+package com.jassap.network;
 
-import java.awt.EventQueue;
+import java.net.Socket;
 
-import com.jassap.server.ui.ServerUI;
-
-public class JassapServer {
-	public static final String appPath = "jassap-server";
-	public static ServerUI ui;
-	public static Server server;
-	public static Config config;
+public class Connection {
+	private Socket socket;
 	
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-            public void run() {
-            	ui = new ServerUI();
-            }
-        });
+	public Connection(Socket socket) {
+		this.socket = socket;
+	}
+	
+	public void close() {
 		
-		server = new ChatServer();
-		config = new Config();
 	}
 }

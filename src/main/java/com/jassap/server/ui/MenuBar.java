@@ -24,6 +24,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
+import com.jassap.server.JassapServer;
+
 public class MenuBar {
 	private JMenuBar menu;
 	
@@ -156,11 +158,15 @@ public class MenuBar {
 	}
 
 	protected void start() {
-		
+		if(JassapServer.server.start()) {
+			JassapServer.ui.statsBar.setStatus("Online");
+		}
 	}
 	
 	protected void stop() {
-		
+		if(JassapServer.server.stop()) {
+			JassapServer.ui.statsBar.setStatus("Offline");
+		}
 	}
 	
 	protected void restart() {
