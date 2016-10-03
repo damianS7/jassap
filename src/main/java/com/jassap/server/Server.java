@@ -18,4 +18,7 @@ package com.jassap.server;
 
 public abstract class Server implements Runnable {
 	
+	public void start() {
+		
+	}
 }
