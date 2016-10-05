@@ -17,23 +17,52 @@
 package com.jassap.server;
 
 import java.awt.EventQueue;
+import java.io.File;
 
 import com.jassap.server.ui.ServerUI;
 
 public class JassapServer {
-	public static final String appPath = "jassap-server";
+	public static final String dirName = "jassap-server/";
 	public static ServerUI ui;
 	public static Server server;
-	public static Config config;
+	public static ServerProperties serverProperties;
 	
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-            public void run() {
-            	ui = new ServerUI();
-            }
-        });
+	public static void main(String[] args) throws Exception {
+		File actualDir = new File(".");
 		
+		// Comprobacion de escritura
+		if(!actualDir.canWrite()) {
+			throw new Exception("This application needs permmissions to write"
+					+ " on the actual folder.");
+		}
+		
+		// Comprobaciones de ficheros de configuracion y directorios
+		File config = new File(dirName);
+		
+		// Si el directorio no existe, se procede a crearlo
+		if (!config.exists()) {
+			if(!config.mkdir()) {
+				throw new Exception("No se pudo crear el directorio para "
+						+ "la configuracion del servidor");
+			}
+		}
+		
+		// Fichero de configuracion del servidor
+		config = new File(dirName + "jassap.properties");
+
+		// Se crea el fichero de configuracion si no existe
+		if(!config.exists()) {
+			config.createNewFile();
+		}
+		
+		// Se lanza la UI
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				ui = new ServerUI();
+			}
+		});
+
+		serverProperties = new ServerProperties(config);
 		server = new ChatServer();
-		config = new Config();
 	}
 }

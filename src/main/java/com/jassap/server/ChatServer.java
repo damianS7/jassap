@@ -66,8 +66,12 @@ public class ChatServer extends Server {
 	}
 
 	@Override
-	public void dispatchConnection(Connection connection) {
-		System.out.println("Nuevo cliente");
+	public boolean handleConnection(Connection connection) {
+		if(!super.handleConnection(connection)) {
+			// Enviar paquete al cliente avisando de que el servidor esta lleno?
+		}
+		//users.add(new User(connection));
+		return false;
 	}
 	
 }

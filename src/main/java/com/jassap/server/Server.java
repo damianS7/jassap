@@ -19,46 +19,80 @@ package com.jassap.server;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import com.jassap.chat.User;
 import com.jassap.network.Connection;
 
+/**
+ * Base del servidor
+ * 
+ * @author danjian
+ */
 public abstract class Server implements Runnable {
 	private final Logger LOGGER = Logger.getLogger(Server.class.getName());
-	private boolean running = false;
-	private ServerSocket serverSocket;
-	private ServerPacketHandler serverPacketHandler;
-	private List<Connection> connections = new ArrayList<Connection>();
-	
+
 	/**
-	 * marca el servidor como "apagandose", a partir de este momento ningun
-	 * nuevo cliente sera aceptado
+	 * Flag de "apagado en curso", a partir del momento que este true el
+	 * servidor empezara el proceso de apagado.
 	 */
 	private boolean shuttingDown = false;
 
+	// Flag de estado del servidor
+	private boolean running = false;
+
+	// Socket del servidor para aceptar conexiones nuevas
+	protected ServerSocket serverSocket;
+
+	// Limite de conexiones permitidas en el servidor
+	protected int maxConnections = 200;
+
+	// Array con las conexiones abiertas en el servidor
+	protected List<Connection> connections = new ArrayList<Connection>();
+
 	/*
-	 * True si el servidor ha recibido la señal para apagarse
+	 * Procesa los paquetes entrantes al servidor y determina una accion para
+	 * cada uno de ellos
+	 */
+	private ServerPacketHandler serverPacketHandler;
+
+	/*
+	 * El numero maximo de conexiones entrantes que aceptara el servidor
+	 */
+	public int getMaxConnections() {
+		return maxConnections;
+	}
+
+	/*
+	 * Cuenta el numero de conexiones abiertas actualmente
+	 */
+	public int countConnections() {
+		return connections.size();
+	}
+
+	/*
+	 * True si el servidor esta apagandose
 	 */
 	public boolean isShuttingDown() {
 		return shuttingDown;
 	}
-	
+
 	/*
 	 * True si el servidor esta iniciado
 	 */
 	public boolean isRunning() {
 		return running;
 	}
-	
+
+	/*
+	 * Devuelve las conexiones abiertas en el servidor
+	 */
 	public List<Connection> getConnections() {
 		return new ArrayList<Connection>(connections);
 	}
-	
+
 	/**
 	 * Cierra todas las conexiones abiertas en el servidor
 	 */
@@ -67,43 +101,48 @@ public abstract class Server implements Runnable {
 			connection.close();
 		}
 	}
-	
+
 	/**
 	 * Reinicia el servidor
-	 * @return Devuelve true solo si el servidor se detuvo e inicio
-	 * sin incidencias
+	 * 
+	 * @return Devuelve true solo si el servidor se detuvo e inicio sin
+	 *         incidencias
 	 */
 	public boolean restart() {
-		if(stop() && start()) {
+		if (stop() && start()) {
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	/**
 	 * Inicia el servidor
+	 * 
 	 * @return true si el servidor estaba detenido y es iniciado con exito
 	 */
 	public boolean start() {
-		if(isRunning()) {
+		if (isRunning()) {
 			return false;
 		}
-		
+
 		try {
-			InetAddress addr = InetAddress.getByName(JassapServer.config.getAddress());
-			serverSocket = new ServerSocket(JassapServer.config.getPort(), 0, addr);
+			InetAddress addr = InetAddress
+					.getByName(JassapServer.serverProperties.getAddress());
+			serverSocket = new ServerSocket(
+					JassapServer.serverProperties.getPort(), 0, addr);
 		} catch (IOException e) {
 			LOGGER.severe("Error al iniciar el servidor.");
 			e.printStackTrace();
 			return false; // No inicio
 		}
-		
+
 		JassapServer.ui.outputLog.append("Servidor escuchando en "
-				+ JassapServer.config.getAddress() + ":" + JassapServer.config.getPort());
+				+ JassapServer.serverProperties.getAddress() + ":"
+				+ JassapServer.serverProperties.getPort());
 
 		serverPacketHandler = new ServerPacketHandler();
-		
+
 		new Thread(this).start();
 		running = true;
 		new Thread(serverPacketHandler).start();
@@ -112,14 +151,18 @@ public abstract class Server implements Runnable {
 
 	/**
 	 * Detiene el servidor
+	 * 
 	 * @return true si el servidor estaba iniciado y se detuvo correctamente
 	 */
 	public boolean stop() {
-		if(!isRunning()) {
+		if (!isRunning()) {
 			// El servidor no esta corriendo, nada que hacer
 			return false;
 		}
-		
+
+		// Señal de apagado en curso ...
+		shuttingDown = true;
+
 		try {
 			serverSocket.close();
 		} catch (IOException e) {
@@ -127,52 +170,50 @@ public abstract class Server implements Runnable {
 			e.printStackTrace();
 			return false;
 		}
-		
-		// No se aceptan nuevas conexiones al servidor
-		shuttingDown = true;
 
 		// Se cierran las conexion de todos los que hubiera conectados
 		kickAll();
-		
+
 		// Servidor detenido
 		running = false;
 		shuttingDown = false;
 		return true;
 	}
-	
+
 	/**
+	 * Define que acciones se toman una vez se ha recibido una nueva conexion
 	 * 
 	 * @param connection
+	 * @return true si la conexion se manejo con exito
 	 */
-	public abstract void dispatchConnection(Connection connection);
-	
+	public boolean handleConnection(Connection connection) {
+		if (countConnections() >= maxConnections) {
+			return false;
+		}
+		connections.add(connection);
+		return true;
+	}
+
 	/*
-	 * 
+	 * Hilo que se mantiene mientras el servidor este encendido
 	 */
 	public void run() {
-		Socket clientSocket = null;
-		
-		while(running) {
-			System.out.println("Servidor corriendo ...");
-			
+		while (running) {
+			/*
+			 * Si el servidor se esta apagando, el loop se mantiene vivo hasta
+			 * que acabe de cerrar todas las conexiones abiertas
+			 */
+			if (isShuttingDown()) {
+				continue;
+			}
+
 			try {
-				// Si el servidor se esta apagando no se aceptan nuevas conexiones
-				if(!isShuttingDown()) {
-					System.out.println("Servidor apagandose ...");
-					clientSocket = serverSocket.accept();
-					dispatchConnection(new Connection(clientSocket));
-				}
+				handleConnection(new Connection(serverSocket.accept()));
 			} catch (SocketException e) {
-				//e.printStackTrace();
-				stop();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
-			
 		}
-		
-		shuttingDown = false;
 		System.out.println("Servidor detenido");
 	}
 }
