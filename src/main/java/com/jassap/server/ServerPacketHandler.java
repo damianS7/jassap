@@ -16,8 +16,45 @@
  */
 package com.jassap.server;
 
+import com.jassap.network.Packet;
 import com.jassap.network.PacketHandler;
 
-public class ServerPacketHandler extends PacketHandler {
+/**
+ * Procesa los paquetes que el servidor recibe de los clientes y lo hace en 
+ * orden de llegada.
+ * @author danjian
+ */
+public class ServerPacketHandler extends PacketHandler implements Runnable {
+	protected boolean keepRunning = true;
 
+	// Detiene el hilo que procesa los paquetes
+	protected void stopRunning() {
+		keepRunning = false;
+	}
+
+	@Override
+	protected void handlePacket(Packet p) {
+
+		super.handlePacket(p);
+	}
+
+	@Override
+	public void run() {
+		while (keepRunning) {
+			// Si hay paquetes en cola ...
+			if (!packetQueue.isEmpty()) {
+
+				/*
+				 * Iteramos sobre getQueuePackets() para no tener problemas con
+				 * los hilos y el acceso a la lista, pues si trabamos
+				 * directamente sobre ella al borrar puede haber problemas de
+				 * concurrencia
+				 */
+				for (Packet packet : getQueuePackets()) {
+					handlePacket(packet);
+					packetQueue.remove(packet);
+				}
+			}
+		}
+	}
 }

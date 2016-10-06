@@ -33,9 +33,8 @@ public class ServerProperties extends Properties {
 	private File file;
 	private String[][] fields = { { "username", "Rhaegon" },
 			{ "password", "123456" }, { "server_ip", "127.0.0.1" },
-			{ "server_port", "7777" }, { "phonenumber", "123456789" },
-			{ "save_logs", "false" },
-			{ "avatar_path", "resources/avatars/avatar1.jpg" } };
+			{ "server_port", "7777" }, 
+			{ "max_connections", "200" } };
 
 	public ServerProperties(File file) throws IOException {
 		this.file = file;
