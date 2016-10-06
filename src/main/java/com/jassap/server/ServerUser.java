@@ -14,27 +14,44 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.jassap.client.ui;
+package com.jassap.server;
 
-import java.awt.event.MouseListener;
-
-import javax.swing.DefaultListModel;
-import javax.swing.JList;
-import javax.swing.ListSelectionModel;
+import com.jassap.network.Connection;
+import com.jassap.network.Packet;
+import com.jassap.network.User;
 
 /**
- * Esta clase es una lista base de la que heredan las lista RoomList y UserList
+ * 
  * @author danjian
  */
-public abstract class JassapList extends JList<String> implements MouseListener {
-	private static final long serialVersionUID = 7305653252735050315L;
-	protected DefaultListModel<String> model;
+public class ServerUser extends User {
+	private int loginTimeout = 60;
+	private boolean logged = false;
 	
-	public JassapList() {
-		super();
-		model = new DefaultListModel<String>();
-		setModel(model);
-		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		addMouseListener(this);
+	public ServerUser(Connection connection) {
+		super(connection);
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				// El usuario tiene X segundos para logearse o su conexion
+				// sera cerrada
+				for (int i = 0; i < loginTimeout; i++) {
+					if(logged) {
+						break;
+					}
+				}
+				
+				if(!logged) {
+					//close();
+				}
+				
+			}
+		}).start();
 	}
+	
+	@Override
+	public void processPacket(Packet p) {
+		JassapServer.server.sph.handlePacket(p);
+	}
+
 }

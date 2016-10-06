@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 by danjian <josepwnJz@gmail.com>
+ * Copyright (C) 2013 by danjian <josepwnz@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
 public class MenuBar extends JMenuBar {
+	private static final long serialVersionUID = 3039018586693195261L;
 	private JMenu file;
 	private JMenu edit;
 	private JMenu help;
@@ -34,24 +35,24 @@ public class MenuBar extends JMenuBar {
 		file = new JMenu("File");
 		JMenuItem fileExit = new JMenuItem("Exit");
 		fileExit.addActionListener(new ActionListener() {
-			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.exit(0);
 			}
 		});
+		file.add(fileExit);
 		
 		edit = new JMenu("Edit");
 		JMenuItem editPreferences = new JMenuItem("Preferences");
 		editPreferences.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				new Preferences();
 			}
 		});
+		edit.add(editPreferences);
 		
 		help = new JMenu("Help");
-		
 		add(file);
 		add(edit);
 		add(help);
