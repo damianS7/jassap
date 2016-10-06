@@ -14,26 +14,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.jassap.network;
+package com.jassap.network.packets;
 
-import java.net.Socket;
+import com.jassap.network.Connection;
+import com.jassap.network.Packet;
 
 /**
- * Clase para gestionar las conexiones a partir de un socket
+ * Este paquete se usa como respuesta al paquete Ping
  * @author danjian
  */
-public class Connection {
-	private Socket socket;
-	
-	public Connection(Socket socket) {
-		this.socket = socket;
+public class Pong extends Packet {
+	private static final long serialVersionUID = 7277259583684305345L;
+
+	public Pong(Connection sender) {
+		super(sender);
 	}
-	
-	public void sendPacket(Packet p) {
-		
-	}
-	
-	public void close() {
-		
-	}
+
 }

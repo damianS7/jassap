@@ -16,10 +16,69 @@
  */
 package com.jassap.network;
 
-public class PacketHandler implements Runnable {
+import java.util.ArrayList;
+import java.util.List;
 
+import com.jassap.network.packets.Ping;
+import com.jassap.network.packets.Pong;
+
+/**
+ * Clase para procesar los paquetes que se envian/reciben entre servidor/cliente
+ * @author danjian
+ */
+public abstract class PacketHandler implements Runnable {
+	protected List<Packet> packetQueue = new ArrayList<Packet>();
+	protected boolean keepRunning = true;
+	
+	// Devuelve la lista "clonada" de los paquetes que hay en la cola
+	private List<Packet> getQueuePackets() {
+		return new ArrayList<Packet>(packetQueue);
+	}
+	
+	// Añade un paquete a la cola
+	protected void queuePacket(Packet packet) {
+		packetQueue.add(packet);
+	}
+	
+	/*
+	 * Determina una accion para cada paquete
+	 */
+	protected void handlePacket(Packet p) {
+		
+		// Los paquetes ping se responden con paquetes "pong"
+		if (p instanceof Ping) {
+			p.getSender().sendPacket(new Pong(p.getSender()));
+			return;
+		}
+		
+		// Los paquetes pong no se responden
+		if (p instanceof Pong) {
+			return;
+		}
+	}
+	
+	// Detiene el hilo que procesa los paquetes
+	protected void stopRunning() {
+		keepRunning = false;
+	}
+	
 	@Override
 	public void run() {
+		
+		while(keepRunning) {
+			// Si hay paquetes en cola ...
+			if(!packetQueue.isEmpty()) {
+				
+				/*
+				 * Iteramos sobre getQueuePackets() para no tener problemas con
+				 * los hilos y el acceso a la lista, pues si trabamos directamente
+				 * sobre ella al borrar puede haber problemas de concurrencia
+				 */
+				for (Packet packet : getQueuePackets()) {
+					handlePacket(packet);
+					packetQueue.remove(packet);
+				}
+			}
+		}
 	}
-
 }
