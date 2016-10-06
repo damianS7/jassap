@@ -25,6 +25,7 @@ import javax.swing.ScrollPaneConstants;
 import net.miginfocom.swing.MigLayout;
 
 public class OutputLog extends JPanel {
+	private static final long serialVersionUID = 2784210405991960783L;
 	private JTextArea textArea;
 
 	public OutputLog() {

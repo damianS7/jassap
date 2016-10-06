@@ -28,7 +28,7 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
 public class StatsBar extends JPanel {
-	
+	private static final long serialVersionUID = -4568155395088704811L;
 	private JLabel status;
 	private JLabel users;
 	private JLabel uptime;
