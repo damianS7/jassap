@@ -24,6 +24,9 @@ import java.util.logging.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.jassap.chat.Privileges;
+import com.jassap.chat.Roles;
+
 /**
  * Clase para interactuar con el fichero .json que contiene las cuentas
  * junto con la informacion de estas
@@ -76,14 +79,17 @@ public class AccountDatabase extends JsonDatabase {
 			accounts.remove(r);
 		}
 	}
-
+	//"rhaegon": {"password":"123456","role":"admin"},
 	public int load() {
 		super.load();
 
 		for (String username : jsonData.keySet()) {
+			String password = jsonData.getJSONObject(username).getString("password");
+			//Roles role = Privileges.valueOf(jsonData.getJSONObject(username).getString("role"));
+			Roles role = Roles.USER;
 			try {
-				Account acc = new Account(username,
-						jsonData.getString(username));
+				Account acc = new Account(username, password);
+				acc.setRole(role);
 				accounts.add(acc);
 			} catch (JSONException e) {
 				LOGGER.severe(e.getMessage());
@@ -98,7 +104,10 @@ public class AccountDatabase extends JsonDatabase {
 	public void save() {
 		jsonData = new JSONObject();
 		for (Account acc : getAccounts()) {
-			jsonData.put(acc.getUser(), acc.getPass());
+			JSONObject accData = new JSONObject();
+			accData.put("password", acc.getPass());
+			accData.put("password", acc.getRole());
+			jsonData.put(acc.getUser(), accData);
 		}
 
 		super.save();

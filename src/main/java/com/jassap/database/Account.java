@@ -15,6 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.jassap.database;
+
+import com.jassap.chat.Roles;
+
 /**
  * Las cuentas cargadas de accounts.json se usan a traves de esta clase 
  * @author danjian
@@ -22,13 +25,28 @@ package com.jassap.database;
 public class Account {
 	private String username;
 	private String password;
+	private Roles role;
 	
-	public Account(String username, String password) {
+	public Account(String username, String password, Roles role) {
 		this.username = username;
 		this.password = password;
+		this.role = role;
+	}
+	
+	public Account(String username, String password) {
+		this(username, password, Roles.USER);
 	}
 	
 	public Account() {
+		this("", "", Roles.USER);
+	}
+	
+	public void setRole(Roles role) {
+		this.role = role;
+	}
+
+	public Roles getRole() {
+		return role;
 	}
 	
 	public void setUser(String username) {
