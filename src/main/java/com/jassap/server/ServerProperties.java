@@ -60,6 +60,14 @@ public class ServerProperties extends Properties {
 	public void save() throws IOException {
 		store(new FileOutputStream(file), "Server properties");
 	}
+	
+	public int getMaxConnections() {
+		return Integer.parseInt(getProperty("max_connections"));
+	}
+	
+	public void setMaxConnections(String connections) {
+		setProperty("max_connections", connections);
+	}
 
 	public String getAddress() {
 		return getProperty("server_ip");
@@ -75,45 +83,5 @@ public class ServerProperties extends Properties {
 
 	public void setPort(int port) {
 		setProperty("server_port", Integer.toString(port));
-	}
-	
-	public void setPhone(String phone) {
-		setProperty("phonenumber", phone);
-	}
-	
-	public void setPassword(String password) {
-		setProperty("password", password);
-	}
-	
-	public String getPassword() {
-		return getProperty("password"); 
-	}
-	
-	public String getPhone() {
-		return getProperty("phonenumber");
-	}
-	
-	public String getAvatarPath() {
-		return getProperty("avatar_path");
-	}
-	
-	public void setAvatarPath(String path) {
-		setProperty("avatar_path", path);
-	}
-	
-	public boolean getSaveLogs() {
-		return Boolean.parseBoolean(getProperty("save_logs"));
-	}
-	
-	public void setSaveLogs(String bool) {
-		setProperty("save_logs", bool);
-	}
-	
-	public String getUsername() {
-		return getProperty("username");
-	}
-	
-	public void setUsername(String username) {
-		setProperty("username", username);
 	}
 }

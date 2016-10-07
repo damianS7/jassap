@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import com.jassap.network.Connection;
+import com.jassap.network.User;
 
 /**
  * Base del servidor
@@ -33,7 +34,7 @@ import com.jassap.network.Connection;
  */
 public abstract class Server implements Runnable {
 	private final Logger LOGGER = Logger.getLogger(Server.class.getName());
-
+	
 	/**
 	 * Flag de "apagado en curso", a partir del momento que este true el
 	 * servidor empezara el proceso de apagado.
@@ -49,15 +50,19 @@ public abstract class Server implements Runnable {
 	// Limite de conexiones permitidas en el servidor
 	protected int maxConnections = 200;
 
-	// Array con las conexiones abiertas en el servidor
-	protected List<Connection> connections = new ArrayList<Connection>();
+	// Array con usuarios con conexiones abiertas en el servidor
+	protected List<User> users = new ArrayList<User>();
 
 	/*
 	 * Procesa los paquetes entrantes al servidor y determina una accion para
 	 * cada uno de ellos
 	 */
-	private ServerPacketHandler serverPacketHandler;
+	protected ServerPacketHandler sph;
 
+	public Server() {
+		sph = new ServerPacketHandler();
+	}
+	
 	/*
 	 * El numero maximo de conexiones entrantes que aceptara el servidor
 	 */
@@ -68,8 +73,8 @@ public abstract class Server implements Runnable {
 	/*
 	 * Cuenta el numero de conexiones abiertas actualmente
 	 */
-	public int countConnections() {
-		return connections.size();
+	public int getCountUsers() {
+		return users.size();
 	}
 
 	/*
@@ -89,16 +94,16 @@ public abstract class Server implements Runnable {
 	/*
 	 * Devuelve las conexiones abiertas en el servidor
 	 */
-	public List<Connection> getConnections() {
-		return new ArrayList<Connection>(connections);
+	public List<User> getUsers() {
+		return new ArrayList<User>(users);
 	}
 
 	/**
 	 * Cierra todas las conexiones abiertas en el servidor
 	 */
 	public void kickAll() {
-		for (Connection connection : getConnections()) {
-			connection.close();
+		for (User user : getUsers()) {
+			user.getConnection().close();
 		}
 	}
 
@@ -141,11 +146,16 @@ public abstract class Server implements Runnable {
 				+ JassapServer.serverProperties.getAddress() + ":"
 				+ JassapServer.serverProperties.getPort());
 
-		serverPacketHandler = new ServerPacketHandler();
+		/*
+		 * En caso de que el servidor se inicie varias veces, pueden quedar
+		 * paquetes antiguos en la cola, por lo que debe ser vaciada cada vez
+		 * que se inicia el servidor
+		 */
+		sph.clearQueue();
 
 		new Thread(this).start();
 		running = true;
-		new Thread(serverPacketHandler).start();
+		new Thread(sph).start();
 		return true;
 	}
 
@@ -171,6 +181,9 @@ public abstract class Server implements Runnable {
 			return false;
 		}
 
+		// Deja de procesar los paquetes recibidos
+		sph.stopRunning();
+		
 		// Se cierran las conexion de todos los que hubiera conectados
 		kickAll();
 
@@ -186,11 +199,11 @@ public abstract class Server implements Runnable {
 	 * @param connection
 	 * @return true si la conexion se manejo con exito
 	 */
-	public boolean handleConnection(Connection connection) {
-		if (countConnections() >= maxConnections) {
+	public boolean addUser(User user) {
+		if (getCountUsers() >= maxConnections) {
 			return false;
 		}
-		connections.add(connection);
+		users.add(user);
 		return true;
 	}
 
@@ -208,7 +221,7 @@ public abstract class Server implements Runnable {
 			}
 
 			try {
-				handleConnection(new Connection(serverSocket.accept()));
+				addUser(new ServerUser(new Connection(serverSocket.accept())));
 			} catch (SocketException e) {
 			} catch (IOException e) {
 				e.printStackTrace();

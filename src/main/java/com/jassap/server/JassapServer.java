@@ -18,51 +18,148 @@ package com.jassap.server;
 
 import java.awt.EventQueue;
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
+import com.jassap.database.AccountDatabase;
+import com.jassap.database.RoomDatabase;
+import com.jassap.network.User;
 import com.jassap.server.ui.ServerUI;
 
-public class JassapServer {
+/**
+ * Esta es la clase que lanza la aplicacion y contiene el servidor del chat
+ * @author danjian
+ */
+public class JassapServer extends Server {
+	private static final Logger LOGGER = Logger.getLogger(JassapServer.class
+			.getName());
 	public static final String dirName = "jassap-server/";
 	public static ServerUI ui;
-	public static Server server;
+	public static JassapServer server;
 	public static ServerProperties serverProperties;
-	
+	public static RoomDatabase roomDatabase;
+	public static AccountDatabase accountDatabase;
+	private List<User> users = new ArrayList<User>();
+
+	/*
+	 * Devuelve una copia de los usuarios que hay conectados en el servidor
+	 */
+	public List<User> getUsers() {
+		return new ArrayList<User>(users);
+	}
+
+	/*
+	 * Devuelve el numero de usuarios conectados en el servidor
+	 */
+	public int countUsers() {
+		return users.size();
+	}
+
+	/*
+	 * Expulsa del servidor a un usuario cerrando la conexion (socket)
+	 */
+	public void kick(User user) {
+
+	}
+
+	/*
+	 * Expulsa a todos los usuarios del servidor
+	 */
+	@Override
+	public void kickAll() {
+		for (User user : getUsers()) {
+			kick(user);
+		}
+	}
+
+	@Override
+	public boolean addUser(User user) {
+		if (!super.addUser(user)) {
+			// Enviar paquete al cliente avisando de que el servidor esta lleno?
+		}
+		// users.add(new User(connection));
+		return false;
+	}
+
 	public static void main(String[] args) throws Exception {
 		File actualDir = new File(".");
-		
 		// Comprobacion de escritura
-		if(!actualDir.canWrite()) {
-			throw new Exception("This application needs permmissions to write"
-					+ " on the actual folder.");
+		if (!actualDir.canWrite()) {
+			throw new Exception("The application needs write permmissions.");
 		}
-		
+
+		// Archivo para los logs ...
+		FileHandler fh;
+		try {
+			fh = new FileHandler(dirName + "/" + JassapServer.class.getName()
+					+ ".log");
+			LOGGER.addHandler(fh);
+			SimpleFormatter formatter = new SimpleFormatter();
+			fh.setFormatter(formatter);
+		} catch (SecurityException e) {
+			throw new Exception(e);
+		} catch (IOException e) {
+			throw new Exception(e);
+		}
+
 		// Comprobaciones de ficheros de configuracion y directorios
 		File config = new File(dirName);
-		
+
 		// Si el directorio no existe, se procede a crearlo
 		if (!config.exists()) {
-			if(!config.mkdir()) {
-				throw new Exception("No se pudo crear el directorio para "
-						+ "la configuracion del servidor");
+			if (!config.mkdir()) {
+				LOGGER.severe("Directory: " + config.getAbsolutePath() + 
+						" cannot be created.");
+				throw new Exception("Directory: " + config.getAbsolutePath() + 
+						" cannot be created.");
 			}
 		}
-		
-		// Fichero de configuracion del servidor
-		config = new File(dirName + "jassap.properties");
 
-		// Se crea el fichero de configuracion si no existe
-		if(!config.exists()) {
-			config.createNewFile();
+		// Fichero de salas
+		File accounts = new File(dirName + "accounts.json");
+		if (!accounts.exists()) {
+			accounts.createNewFile();
 		}
-		
-		// Se lanza la UI
+
+		// Fichero de salas
+		File rooms = new File(dirName + "rooms.json");
+		if (!rooms.exists()) {
+			rooms.createNewFile();
+		}
+
+		// Fichero de configuracion del servidor
+		File properties = new File(dirName + "jassap.properties");
+		if (!properties.exists()) {
+			properties.createNewFile();
+		}
+
+		LOGGER.info("Starting UI ...");
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				ui = new ServerUI();
 			}
 		});
 
-		serverProperties = new ServerProperties(config);
-		server = new ChatServer();
+		// Carga config
+		LOGGER.info("Loading server properties ...");
+		serverProperties = new ServerProperties(properties);
+
+		// Carga salas
+		LOGGER.info("Loading rooms ...");
+		roomDatabase = new RoomDatabase(rooms);
+		LOGGER.info(roomDatabase.load() + " rooms loaded.");
+
+		// Carga de usuarios
+		LOGGER.info("Loading user accounts ...");
+		accountDatabase = new AccountDatabase(accounts);
+		LOGGER.info(accountDatabase.load() + " accounts loaded.");
+
+		// Instancia servidor
+		LOGGER.info("Starting server ... ");
+		server = new JassapServer();
 	}
 }
