@@ -30,7 +30,7 @@ public class MenuLeft extends MenuBar {
 	public MenuLeft() {
 		super();
 		panel = new JPanel();
-		panel.setLayout(new MigLayout("", "[100px:n,grow][100px:n,grow]", "[][][][][]"));
+		panel.setLayout(new MigLayout("", "[100px:n,grow][100px:n,grow]", "[][][][][][]"));
 		
 		JButton btnStart = new JButton("Start");
 		btnStart.addActionListener(new ActionListener() {
@@ -48,43 +48,6 @@ public class MenuLeft extends MenuBar {
 				stop();
 			}
 		});
-		panel.add(btnStop, "cell 1 0,growx");
-		
-		JButton btnRestart = new JButton("Restart");
-		btnRestart.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				restart();
-			}
-		});
-		panel.add(btnRestart, "cell 0 1,growx");
-		
-		JButton btnExit = new JButton("Exit");
-		btnExit.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				exit();
-			}
-		});
-		panel.add(btnExit, "cell 1 1,growx");
-		
-		JButton btnConnections = new JButton("Connections");
-		btnConnections.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				editConnections();
-			}
-		});
-		panel.add(btnConnections, "cell 0 2, growx");
-		
-		JButton btnRooms = new JButton("Rooms");
-		btnRooms.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				editRooms();
-			}
-		});
-		panel.add(btnRooms, "cell 1 2, growx");
 		
 		JButton btnPreferences = new JButton("Preferences");
 		btnPreferences.addActionListener(new ActionListener() {
@@ -93,7 +56,43 @@ public class MenuLeft extends MenuBar {
 				editPreferences();
 			}
 		});
-		panel.add(btnPreferences, "cell 0 3, growx");
+		panel.add(btnPreferences, "cell 1 0,growx");
+		panel.add(btnStop, "cell 0 1,growx");
+		
+		JButton btnRooms = new JButton("Rooms");
+		btnRooms.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				editRooms();
+			}
+		});
+		
+		JButton btnRestart = new JButton("Restart");
+		btnRestart.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				restart();
+			}
+		});
+		
+		JButton btnAccounts = new JButton("Accounts");
+		btnAccounts.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				editAccounts();
+			}
+		});
+		panel.add(btnAccounts, "cell 1 1,growx");
+		panel.add(btnRestart, "cell 0 2,growx");
+		panel.add(btnRooms, "cell 1 2, growx");
+		
+		JButton btnConnections = new JButton("Connections");
+		btnConnections.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				editConnections();
+			}
+		});
 		
 		JButton btnClearLog = new JButton("Clear log");
 		btnClearLog.addActionListener(new ActionListener() {
@@ -102,16 +101,8 @@ public class MenuLeft extends MenuBar {
 				clearLog();
 			}
 		});
-		panel.add(btnClearLog, "cell 1 3, growx");
-		
-		JButton btnPrivileges = new JButton("Privileges");
-		btnPrivileges.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				editPrivileges();
-			}
-		});
-		panel.add(btnPrivileges, "cell 0 4, growx");
+		panel.add(btnClearLog, "cell 0 3,growx");
+		panel.add(btnConnections, "cell 1 3,growx");
 		
 		JButton btnKickAll = new JButton("Kick All");
 		btnKickAll.addActionListener(new ActionListener() {
@@ -120,7 +111,16 @@ public class MenuLeft extends MenuBar {
 				kickAll();
 			}
 		});
-		panel.add(btnKickAll, "cell 1 4, growx");
+		panel.add(btnKickAll, "cell 0 4,growx");
+		
+		JButton btnExit = new JButton("Exit");
+		btnExit.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				exit();
+			}
+		});
+		panel.add(btnExit, "cell 1 4,growx");
 	}
 	
 	public JPanel getPanel() {

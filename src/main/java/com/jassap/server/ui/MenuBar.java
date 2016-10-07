@@ -98,15 +98,15 @@ public class MenuBar {
 			}
 		});
 		menuEdit.add(editClearLog);
-		
-		JMenuItem editPrivileges = new JMenuItem("Privileges");
-		editPrivileges.addActionListener(new ActionListener() {
+				
+		JMenuItem editAccounts = new JMenuItem("Accounts");
+		editAccounts.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				editPrivileges();
+				editAccounts();
 			}
 		});
-		menuEdit.add(editPrivileges);
+		menuEdit.add(editAccounts);
 		
 		JMenu menuView = new JMenu("View");
 		menu.add(menuView);
@@ -129,34 +129,24 @@ public class MenuBar {
 			}
 		});
 		menuHelp.add(helpAbout);
+	}
 		
-		
-		
-		
+	public JMenuBar getBar() {
+		return menu;
 	}
 	
-	protected void kickAll() {
-		
-	}
-	
-	protected void editPrivileges() {
-	}
-
-	protected void clearLog() {
+	protected void editAccounts() {
+		new Accounts();
 	}
 
 	protected void editPreferences() {
+		new Preferences();
 	}
 
 	protected void editRooms() {
+		new Rooms();
 	}
-
-	protected void showAbout() {
-	}
-
-	protected void editConnections() {
-	}
-
+	
 	protected void start() {
 		if(JassapServer.server.start()) {
 			JassapServer.ui.statsBar.setStatus("Online");
@@ -169,6 +159,21 @@ public class MenuBar {
 		}
 	}
 	
+	protected void clearLog() {
+		JassapServer.ui.outputLog.clear();
+	}
+	
+	protected void editConnections() {
+	}
+	
+	protected void kickAll() {
+	}
+
+	protected void showAbout() {
+	}
+
+
+	
 	protected void restart() {
 		// restartt
 	}
@@ -178,7 +183,5 @@ public class MenuBar {
 		System.exit(0);
 	}
 	
-	public JMenuBar getBar() {
-		return menu;
-	}
+	
 }
