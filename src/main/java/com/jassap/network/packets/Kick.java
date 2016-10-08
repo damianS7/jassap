@@ -18,11 +18,30 @@ package com.jassap.network.packets;
 
 import com.jassap.network.Packet;
 /**
- * Paquete enviado por el cliente para avisar al servidor de que se desconecta.
- * Si el paquete es enviado por el servidor entonces, ordena al cliente cerrar
- * la conexion
+ * Al recibir este paquete el usuario es kickeado de una sala
  * @author danjian
  */
-public class Disconnect extends Packet {
-	private static final long serialVersionUID = -552390140544585668L;
+public class Kick extends Packet {
+	private static final long serialVersionUID = -8983058122845285595L;
+	private String reason;
+	private String kickedBy;
+	private String room;
+	
+	public Kick(String kickedBy, String reason, String room) {
+		this.reason = reason;
+		this.room = room;
+		this.kickedBy = kickedBy;
+	}
+	
+	public String getReason() {
+		return reason;
+	}
+	
+	public String getKickedBy() {
+		return kickedBy;
+	}
+	
+	public String getRoom() {
+		return room;
+	}
 }

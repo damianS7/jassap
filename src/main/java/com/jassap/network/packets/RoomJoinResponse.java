@@ -16,13 +16,30 @@
  */
 package com.jassap.network.packets;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.jassap.network.Packet;
+
 /**
- * Paquete enviado por el cliente para avisar al servidor de que se desconecta.
- * Si el paquete es enviado por el servidor entonces, ordena al cliente cerrar
- * la conexion
+ * Paquete enviado el servidor que contiene los usuarios de la sala
  * @author danjian
  */
-public class Disconnect extends Packet {
-	private static final long serialVersionUID = -552390140544585668L;
+public class RoomJoinResponse extends Packet {
+	private static final long serialVersionUID = 8240388363079480334L;
+	private List<String> users = new ArrayList<String>();
+	private String room;
+	
+	public RoomJoinResponse(String room, List<String> users) {
+		this.room = room;
+		this.users = users;
+	}
+	
+	public List<String> getUsers() {
+		return users;
+	}
+	
+	public String getRoom() {
+		return room;
+	}
 }

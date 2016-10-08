@@ -17,12 +17,32 @@
 package com.jassap.network.packets;
 
 import com.jassap.network.Packet;
+
 /**
- * Paquete enviado por el cliente para avisar al servidor de que se desconecta.
- * Si el paquete es enviado por el servidor entonces, ordena al cliente cerrar
- * la conexion
- * @author danjian
+ * Este paquete lo envia el servidor y contiene los nuevos mensajes de una sala
+ * @author damjian
  */
-public class Disconnect extends Packet {
-	private static final long serialVersionUID = -552390140544585668L;
+public class RoomMessage extends Packet {
+	private static final long serialVersionUID = 3116327084898693224L;
+	private String sender;
+	private String message;
+	private String room;
+	
+	public RoomMessage(String sender, String message, String room) {
+		this.sender = sender;
+		this.message = message;
+		this.room = room;
+	}
+	
+	public String getMessage() {
+		return message;
+	}
+	
+	public String getRoom() {
+		return room;
+	}
+	
+	public String getSender() {
+		return sender;
+	}
 }
