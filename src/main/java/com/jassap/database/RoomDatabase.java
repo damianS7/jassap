@@ -25,9 +25,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.jassap.chat.Roles;
 import com.jassap.chat.Room;
-import com.jassap.chat.RoomModerator;
 
 /**
  * Clase para interactuar con el fichero .json que contiene las salas junto con
@@ -108,8 +106,7 @@ public class RoomDatabase extends JsonDatabase {
 				JSONArray modsJson = roomJson.getJSONArray("mods");
 				for (int i = 0; i < modsJson.length(); i++) {
 					String mod = (String) modsJson.get(i);
-					RoomModerator rm = new RoomModerator(mod);
-					r.addRoomModerator(rm);
+					r.addRoomModerator(mod);
 				}
 
 				rooms.add(r);
@@ -131,8 +128,8 @@ public class RoomDatabase extends JsonDatabase {
 			roomData.put("limit", room.getMaxUsers());
 
 			JSONArray mods = new JSONArray();
-			for (RoomModerator mod : room.getMods()) {
-				mods.put(mod.getName());
+			for (String mod : room.getMods()) {
+				mods.put(mod);
 			}
 			roomData.put("mods", mods);
 			jsonData.put(room.getName(), roomData);

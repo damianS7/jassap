@@ -16,31 +16,26 @@
  */
 package com.jassap.server.ui;
 
-import javax.swing.JDialog;
-
-import net.miginfocom.swing.MigLayout;
-
-import javax.swing.JPanel;
-import javax.swing.JButton;
-
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.JList;
+import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JTextField;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
+
+import net.miginfocom.swing.MigLayout;
 
 import com.jassap.chat.Room;
-import com.jassap.chat.RoomModerator;
 import com.jassap.server.JassapServer;
-
-import javax.swing.SwingConstants;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
 
 
 public class Rooms extends JDialog {
@@ -123,7 +118,7 @@ public class Rooms extends JDialog {
 				String[] mods = mod.getText().split(",");
 				
 				for (String mod : mods) {
-					r.addRoomModerator(new RoomModerator(mod.trim()));
+					r.addRoomModerator(mod.trim());
 				}
 				
 				JassapServer.roomDatabase.addRoom(r);

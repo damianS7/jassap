@@ -20,16 +20,34 @@ import java.awt.EventQueue;
 import java.io.File;
 
 import com.jassap.client.ui.ClientUI;
+import com.jassap.network.packets.RoomJoinRequest;
+import com.jassap.network.packets.RoomMessage;
 /**
- * Clase main/lanzador del cliente
+ * Clase principal del chat 
  * @author danjian
  */
-public class JassapClient {
+public class JassapClient extends Client {
 	public static final String dirName = "jassap/";
-	public static ClientUI ui;
-	public static Client client;
+	public static JassapClient client;
 	public static ClientProperties clientProperties;
-
+	public static ClientUI ui;
+	
+	public void joinRoom(String room) {
+		RoomJoinRequest rjr = new RoomJoinRequest(room, client.getClientUser().getAccount().getUser());
+		client.getClientUser().getConnection().sendPacket(rjr);
+	}
+	
+	public void exitRoom() {
+	}
+	
+	public void sendRoomMessage(String message, String room) {
+		RoomMessage rm = new RoomMessage(client.getClientUser().getAccount().getUser(), message, room);
+		client.getClientUser().getConnection().sendPacket(rm);
+	}
+	
+	public void sendConversationMessage() {
+	}
+	
 	public static void main(String[] args) throws Exception {
 		File actualDir = new File(".");
 
@@ -66,6 +84,6 @@ public class JassapClient {
 		});
 
 		clientProperties = new ClientProperties(config);
-		client = new Client();
+		client = new JassapClient();
 	}
 }
