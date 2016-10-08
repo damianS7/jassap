@@ -14,14 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.jassap.network.packets;
+package com.jassap.exceptions;
 
-import com.jassap.network.Packet;
-
-/**
- * Este paquete no hace nada!
- * @author danjian
- */
-public class DummyPacket extends Packet {
-	private static final long serialVersionUID = -6880568407100069272L;
+public class RoomJsonFormaException extends Exception {
+	
 }

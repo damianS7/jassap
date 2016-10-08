@@ -34,7 +34,7 @@ import javax.swing.SwingConstants;
 
 import net.miginfocom.swing.MigLayout;
 
-import com.jassap.chat.Privileges;
+import com.jassap.chat.Roles;
 import com.jassap.database.Account;
 import com.jassap.server.JassapServer;
 
@@ -106,14 +106,14 @@ public class Accounts extends JDialog {
 		panel_1.add(password2, "cell 1 2,growx");
 
 		roleBox = new JComboBox<String>();
-		roleBox.addItem("Administrator");
-		roleBox.addItem("Super Moderator");
-		roleBox.addItem("Moderator");
-		roleBox.addItem("User");
+		roleBox.addItem("ADMIN");
+		roleBox.addItem("SUPERMOD");
+		roleBox.addItem("MOD");
+		roleBox.addItem("USER");
 
 		JLabel lblPrivileges = new JLabel("Privileges");
 		panel_1.add(lblPrivileges, "cell 0 3,alignx left");
-		roleBox.setSelectedItem("User");
+		roleBox.setSelectedItem("USER");
 		panel_1.add(roleBox, "cell 1 3,growx");
 
 		JButton btnNewAccount = new JButton("New account");
@@ -138,7 +138,8 @@ public class Accounts extends JDialog {
 				list.addAccount(username.getText());
 				Account acc = new Account(username.getText(), new String(
 						password1.getPassword()));
-				acc.setRole(Privileges.valueOf(roleBox.getSelectedItem()
+				//System.out.println(Roles.valueOf(roleBox.getSelectedItem()));
+				acc.setRole(Roles.valueOf(roleBox.getSelectedItem()
 						.toString()));
 				JassapServer.accountDatabase.addAccount(acc);
 				JassapServer.accountDatabase.save();

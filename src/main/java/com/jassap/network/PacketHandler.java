@@ -27,15 +27,15 @@ import com.jassap.network.packets.Pong;
  * @author danjian
  */
 public abstract class PacketHandler {
-	protected List<Packet> packetQueue = new ArrayList<Packet>();
+	protected List<DataPacket> packetQueue = new ArrayList<DataPacket>();
 	
 	// Devuelve la lista "clonada" de los paquetes que hay en la cola
-	protected List<Packet> getQueuePackets() {
-		return new ArrayList<Packet>(packetQueue);
+	protected List<DataPacket> getQueuePackets() {
+		return new ArrayList<DataPacket>(packetQueue);
 	}
 	
 	// Añade un paquete a la cola
-	public void queuePacket(Packet packet) {
+	public void queuePacket(DataPacket packet) {
 		packetQueue.add(packet);
 	}
 	
@@ -47,14 +47,18 @@ public abstract class PacketHandler {
 	/*
 	 * Determina una accion para cada paquete
 	 */
-	protected void handlePacket(Packet p) {
+	protected void handlePacket(DataPacket dp) {
+		Packet p = dp.getPacket();
+		
 		// Los paquetes ping se responden con paquetes "pong"
 		if (p instanceof Ping) {
-			p.getSender().sendPacket(new Pong(p.getSender()));
+			System.out.println("Ping received!");
+			dp.getSender().sendPacket(new Pong());
 		}
 		
 		// Los paquetes pong no se responden
 		if (p instanceof Pong) {
+			System.out.println("Pong received!");
 			return;
 		}
 		

@@ -16,12 +16,29 @@
  */
 package com.jassap.network.packets;
 
+import com.jassap.chat.Roles;
 import com.jassap.network.Packet;
 
 /**
- * Este paquete no hace nada!
+ * Este paquete es enviado del servidor al cliente en respuesta al paquete
+ * @see LoginRequest
  * @author danjian
  */
-public class DummyPacket extends Packet {
-	private static final long serialVersionUID = -6880568407100069272L;
+public class LoginResponse extends Packet {
+	private static final long serialVersionUID = -8124832437328062519L;
+	private boolean logged = false;
+	private Roles role = Roles.USER;
+	
+	public LoginResponse(boolean logged, Roles role) {
+		this.logged = logged;
+		this.role = role;
+	}
+	
+	public boolean isLogged() {
+		return logged;
+	}
+	
+	public Roles getRole() {
+		return role;
+	}
 }

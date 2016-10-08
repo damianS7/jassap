@@ -16,7 +16,6 @@
  */
 package com.jassap.network.packets;
 
-import com.jassap.network.Connection;
 import com.jassap.network.Packet;
 
 /**
@@ -25,9 +24,4 @@ import com.jassap.network.Packet;
  */
 public class Pong extends Packet {
 	private static final long serialVersionUID = 7277259583684305345L;
-
-	public Pong(Connection sender) {
-		super(sender);
-	}
-
 }

@@ -16,7 +16,6 @@
  */
 package com.jassap.network.packets;
 
-import com.jassap.network.Connection;
 import com.jassap.network.Packet;
 
 /**
@@ -26,9 +25,4 @@ import com.jassap.network.Packet;
  */
 public class Ping extends Packet {
 	private static final long serialVersionUID = -4107460356296578918L;
-
-	public Ping(Connection sender) {
-		super(sender);
-	}
-
 }

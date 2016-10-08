@@ -25,7 +25,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.jassap.chat.Privileges;
 import com.jassap.chat.Roles;
 import com.jassap.chat.Room;
 import com.jassap.chat.RoomModerator;
@@ -110,8 +109,6 @@ public class RoomDatabase extends JsonDatabase {
 				for (int i = 0; i < modsJson.length(); i++) {
 					String mod = (String) modsJson.get(i);
 					RoomModerator rm = new RoomModerator(mod);
-					Privileges p = new Privileges(Roles.MOD);
-					rm.setPrivileges(p);
 					r.addRoomModerator(rm);
 				}
 

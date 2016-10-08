@@ -19,13 +19,11 @@ package com.jassap.server;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-
-import com.jassap.network.Connection;
-import com.jassap.network.User;
 
 /**
  * Base del servidor
@@ -51,7 +49,7 @@ public abstract class Server implements Runnable {
 	protected int maxConnections = 200;
 
 	// Array con usuarios con conexiones abiertas en el servidor
-	protected List<User> users = new ArrayList<User>();
+	protected List<ServerConnection> connections = new ArrayList<ServerConnection>();
 
 	/*
 	 * Procesa los paquetes entrantes al servidor y determina una accion para
@@ -73,8 +71,15 @@ public abstract class Server implements Runnable {
 	/*
 	 * Cuenta el numero de conexiones abiertas actualmente
 	 */
-	public int getCountUsers() {
-		return users.size();
+	public int getCountConnections() {
+		return connections.size();
+	}
+	
+	/*
+	 * Devuelve una copia de las que hay en el servidor
+	 */
+	public List<ServerConnection> getConnections() {
+		return new ArrayList<ServerConnection>(connections);
 	}
 
 	/*
@@ -91,19 +96,12 @@ public abstract class Server implements Runnable {
 		return running;
 	}
 
-	/*
-	 * Devuelve las conexiones abiertas en el servidor
-	 */
-	public List<User> getUsers() {
-		return new ArrayList<User>(users);
-	}
-
 	/**
 	 * Cierra todas las conexiones abiertas en el servidor
 	 */
 	public void kickAll() {
-		for (User user : getUsers()) {
-			user.getConnection().close();
+		for (ServerConnection connection : getConnections()) {
+			connection.close();
 		}
 	}
 
@@ -195,15 +193,16 @@ public abstract class Server implements Runnable {
 
 	/**
 	 * Define que acciones se toman una vez se ha recibido una nueva conexion
-	 * 
 	 * @param connection
 	 * @return true si la conexion se manejo con exito
 	 */
-	public boolean addUser(User user) {
-		if (getCountUsers() >= maxConnections) {
+	public boolean addConnection(ServerConnection connection) {
+		// Si hay demasiadas conexiones se rechaza
+		if (getCountConnections() >= maxConnections) {
+			connection.close();
 			return false;
 		}
-		users.add(user);
+		connections.add(connection);
 		return true;
 	}
 
@@ -221,7 +220,10 @@ public abstract class Server implements Runnable {
 			}
 
 			try {
-				addUser(new ServerUser(new Connection(serverSocket.accept())));
+				Socket s = serverSocket.accept();
+				ServerConnection sc = new ServerConnection(s);
+				new Thread(sc).start();
+				addConnection(sc);
 			} catch (SocketException e) {
 			} catch (IOException e) {
 				e.printStackTrace();

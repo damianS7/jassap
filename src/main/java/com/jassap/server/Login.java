@@ -14,14 +14,37 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.jassap.network.packets;
+package com.jassap.server;
 
-import com.jassap.network.Packet;
+import com.jassap.database.Account;
 
-/**
- * Este paquete no hace nada!
- * @author danjian
- */
-public class DummyPacket extends Packet {
-	private static final long serialVersionUID = -6880568407100069272L;
+public class Login {
+	private Account account;
+	private boolean valid = false;
+	
+	public Login(Account account) {
+		this.account = account;
+		
+		Account a = JassapServer.accountDatabase.getAccount(account.getUser());
+		
+		if(a != null) {
+			if(a.getPass().equals(account.getPass())) {
+				valid = true;
+				account.setRole(a.getRole());
+			}
+		}
+		
+	}
+	
+	public Account getAccount() {
+		return account;
+	}
+	
+	public Login(String username, String password) {
+		this(new Account(username, password));
+	}
+	
+	public boolean isValid() {
+		return valid;
+	}
 }

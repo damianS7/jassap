@@ -16,42 +16,18 @@
  */
 package com.jassap.server;
 
+import com.jassap.database.Account;
 import com.jassap.network.Connection;
+import com.jassap.network.DataPacket;
 import com.jassap.network.Packet;
 import com.jassap.network.User;
 
 /**
- * 
  * @author danjian
  */
 public class ServerUser extends User {
-	private int loginTimeout = 60;
-	private boolean logged = false;
-	
-	public ServerUser(Connection connection) {
+	public ServerUser(Connection connection, Account account) {
 		super(connection);
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				// El usuario tiene X segundos para logearse o su conexion
-				// sera cerrada
-				for (int i = 0; i < loginTimeout; i++) {
-					if(logged) {
-						break;
-					}
-				}
-				
-				if(!logged) {
-					//close();
-				}
-				
-			}
-		}).start();
+		this.account = account;
 	}
-	
-	@Override
-	public void processPacket(Packet p) {
-		JassapServer.server.sph.handlePacket(p);
-	}
-
 }

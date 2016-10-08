@@ -14,14 +14,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.jassap.network.packets;
+package com.jassap.network;
 
-import com.jassap.network.Packet;
-
-/**
- * Este paquete no hace nada!
- * @author danjian
- */
-public class DummyPacket extends Packet {
-	private static final long serialVersionUID = -6880568407100069272L;
+public class DataPacket {
+	/*
+	 * Esta es la conexion de la que procede el paquete y la que se ha de usar
+	 * para responder. A traves de esta conexion se envia la respuesta.
+	 * 
+	 * Ej: Un paquete procedente de la conexion X ha de responder usando
+	 * la misma conexion por la que el paquete llego.
+	 */
+	private Connection sender;
+	private Packet packet;
+	
+	public DataPacket(Connection sender, Packet packet) {
+		this.packet = packet;
+		this.sender = sender;
+	}
+	
+	public Packet getPacket() {
+		return packet;
+	}
+	
+	public Connection getSender() {
+		return sender;
+	}
 }

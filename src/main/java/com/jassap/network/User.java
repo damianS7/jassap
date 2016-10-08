@@ -16,66 +16,30 @@
  */
 package com.jassap.network;
 
-import com.jassap.exceptions.ConnectionException;
-import com.jassap.exceptions.ConnectionLostException;
+import com.jassap.database.Account;
 
 /**
  * Esta clase se usa para identificar a las conexiones establecidas por los
  * usuarios
  * @author danjian
  */
-public abstract class User implements Runnable {
-	protected Connection conn;
-	//protected Privileges priv
-	//protected ChatUser
-	//protected ServerUser
+public abstract class User {
+	protected Connection connection;
+	protected Account account;
 	
-	public User(Connection conn) {
-		this.conn = conn;
+	public User(Connection connection) {
+		this.connection = connection;
 	}
-	
-	public abstract void processPacket(Packet p);
 	
 	public Connection getConnection() {
-		return conn;
+		return connection;
 	}
 	
-	@Override
-	public void run() {
-		while(conn.isAlive()) {
-			Packet p = null;
-			try {
-				p = conn.readPacket();
-			} catch (ConnectionLostException e) {
-				e.printStackTrace();
-				break;
-			} catch (ConnectionException e) {
-				e.printStackTrace();
-				break;
-			}
-			
-			if(p != null) {
-				processPacket(p);
-			}
-		}
-		
-		/*
-		Thread t = new Thread(ph);
-		t.start();
-
-		// List packet para ir leyendo uno a uno segun order de llegada
-		while (cc.isAlive()) {
-			// Esperando paquetes
-			DataPacket dp = readPacket();
-			if (dp instanceof DataPacket) {
-				cc.alive();
-				Packet packet = new Packet(this, dp);
-				ph.queuePacket(packet);
-			}
-		}
-		*/
-		
-		System.out.println("Conexion terminada");
+	public Account getAccount() {
+		return account;
 	}
 	
+	public void setAccount(Account account) {
+		this.account = account;
+	}
 }

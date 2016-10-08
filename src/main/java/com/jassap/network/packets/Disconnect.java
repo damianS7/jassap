@@ -17,11 +17,10 @@
 package com.jassap.network.packets;
 
 import com.jassap.network.Packet;
-
 /**
- * Este paquete no hace nada!
+ * Paquete enviado por el cliente para avisar al servidor de que se desconecta
  * @author danjian
  */
-public class DummyPacket extends Packet {
-	private static final long serialVersionUID = -6880568407100069272L;
+public class Disconnect extends Packet {
+	private static final long serialVersionUID = -552390140544585668L;
 }

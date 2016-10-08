@@ -19,9 +19,24 @@ package com.jassap.network.packets;
 import com.jassap.network.Packet;
 
 /**
- * Este paquete no hace nada!
+ * Este paquete es enviado desde el cliente al servidor para autentificarse.
  * @author danjian
  */
-public class DummyPacket extends Packet {
-	private static final long serialVersionUID = -6880568407100069272L;
+public class LoginRequest extends Packet {
+	private static final long serialVersionUID = 7664873911929962938L;
+	private String username;
+	private String password;
+	
+	public LoginRequest(String username, String password) {
+		this.username = username;
+		this.password = password;
+	}
+	
+	public String getUsername() {
+		return username;
+	}
+	
+	public String getPassword() {
+		return password;
+	}
 }

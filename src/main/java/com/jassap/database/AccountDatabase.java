@@ -24,7 +24,6 @@ import java.util.logging.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.jassap.chat.Privileges;
 import com.jassap.chat.Roles;
 
 /**

@@ -26,21 +26,4 @@ import java.io.Serializable;
  */
 public abstract class Packet implements Serializable {
 	private static final long serialVersionUID = 4858010588787649345L;
-	/*
-	 * Esta es la conexion de la que procede el paquete y la que se ha de usar
-	 * para responder. A traves de esta conexion se envia la respuesta.
-	 * 
-	 * Ej: Un paquete procedente de la conexion X ha de responder usando
-	 * la misma conexion por la que el paquete llego.
-	 */
-	protected Connection sender;
-	
-	public Packet(Connection sender) {
-		this.sender = sender;
-	}
-	
-	// Devuelve la conexion que envia el paquete
-	public Connection getSender() {
-		return sender;
-	}
 }

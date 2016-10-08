@@ -43,22 +43,14 @@ public class JassapServer extends Server {
 	public static ServerProperties serverProperties;
 	public static RoomDatabase roomDatabase;
 	public static AccountDatabase accountDatabase;
-	private List<User> users = new ArrayList<User>();
-
-	/*
-	 * Devuelve una copia de los usuarios que hay conectados en el servidor
-	 */
-	public List<User> getUsers() {
-		return new ArrayList<User>(users);
-	}
-
-	/*
-	 * Devuelve el numero de usuarios conectados en el servidor
-	 */
+	private List<ServerUser> users = new ArrayList<ServerUser>();
+	private int maxUsers = 150;
+	
+	
 	public int countUsers() {
 		return users.size();
 	}
-
+	
 	/*
 	 * Expulsa del servidor a un usuario cerrando la conexion (socket)
 	 */
@@ -71,17 +63,20 @@ public class JassapServer extends Server {
 	 */
 	@Override
 	public void kickAll() {
-		for (User user : getUsers()) {
-			kick(user);
-		}
+		//for (User user : getUsers()) {
+			//kick(user);
+		//}
 	}
 
-	@Override
-	public boolean addUser(User user) {
-		if (!super.addUser(user)) {
+	public boolean addUser(ServerUser user) {
+		//if (!super.addUser(user)) {
 			// Enviar paquete al cliente avisando de que el servidor esta lleno?
+		//}
+		
+		if (countUsers() >= maxUsers) {
+			return false;
 		}
-		// users.add(new User(connection));
+		//new Thread(connection).start();
 		return false;
 	}
 
