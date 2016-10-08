@@ -67,7 +67,7 @@ public class UserList extends JassapList {
 			// Numero de fila donde esta el puntero
 			//int row = model.rowAtPoint(e.getPoint());
 			setSelectedIndex(locationToIndex(e.getPoint()));
-			System.out.println("Actions over: " + model.getElementAt(getSelectedIndex()));
+			System.out.println("Actions over: " + getModel().getElementAt(getSelectedIndex()));
 			menu.show(e.getComponent(), e.getX(), e.getY());
 		}
 	}
@@ -86,10 +86,7 @@ public class UserList extends JassapList {
 		showPopupMenu(e);
 		
 		if(e.getClickCount() == 2) {
-			
 			JassapClient.ui.addTab(new ConversationTab(model.get(getSelectedIndex())));
-			//joinRoom(e);
-			//JassapClient._client.joinRoom(list.getSelectedValue());
 		}
 	}
 

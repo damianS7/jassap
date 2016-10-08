@@ -27,9 +27,20 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import net.miginfocom.swing.MigLayout;
+
 import javax.swing.JPanel;
 import javax.swing.JButton;
+
+import com.jassap.client.JassapClient;
+
+import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
+import javax.swing.JLabel;
 
 public class ClientUI {
 	public JFrame frame;
@@ -43,6 +54,8 @@ public class ClientUI {
 	public List<TabChat> tabs = new ArrayList<TabChat>();
 	private JPanel panel;
 	private JButton btnConnect;
+	private JLabel lblStatus;
+	private JLabel status;
 	
 	public ClientUI() {
 		setSystemLookAndFeel();
@@ -58,10 +71,36 @@ public class ClientUI {
 		frame.getContentPane().add(panel, "cell 0 1 2 1,grow");
 		
 		btnConnect = new JButton("Connect");
+		btnConnect.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(JassapClient.client.isConnected()) {
+					JassapClient.client.disconnect();
+				} else {
+					JassapClient.client.connect();
+				}
+			}
+		});
+		
+		lblStatus = new JLabel("Status:");
+		panel.add(lblStatus);
+		
+		status = new JLabel("Disconnected");
+		status.addPropertyChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent e) {
+				// Color para online
+				if (status.getText().equals("Connected")) {
+					status.setForeground(Color.GREEN);
+					btnConnect.setText("Disconnect");
+				} else {
+					// Color para el resto de estados
+					status.setForeground(Color.RED);
+					btnConnect.setText("Connect");
+				}
+			}
+		});
+		panel.add(status);
 		panel.add(btnConnect);
-		rooms.addRoom("Room 1");
-		rooms.addRoom("Room 2");
-		rooms.addRoom("Room 3");
 	}
 	
 	// Borra un "tab" de la lista "tabs" y del tabbedPane
@@ -89,6 +128,10 @@ public class ClientUI {
 			}
 		}
 		return null;
+	}
+	
+	public void setStatus(String status) {
+		this.status.setText(status);
 	}
 	
 	private void initComponents() {

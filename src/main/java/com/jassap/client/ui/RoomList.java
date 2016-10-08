@@ -35,6 +35,12 @@ public class RoomList extends JassapList {
 	public RoomList() {
 		super();
 	}
+	
+	public void addRooms(List<String> rooms) {
+		for (String room : rooms) {
+			addRoom(room);
+		}
+	}
 
 	public void addRoom(String room) {
 		rooms.add(room);
@@ -59,15 +65,7 @@ public class RoomList extends JassapList {
 	public void mouseReleased(MouseEvent e) {
 		
 		if (e.getClickCount() == 2) {
-			List<String> users = new ArrayList<String>();
-			for (int i = 0; i < 50; i++) {
-				users.add("user" + i);
-			}
-			RoomTab rt = new RoomTab(model.get(getSelectedIndex()));
-			rt.getList().addUsers(users);
-			JassapClient.ui.addTab(rt);
-			// joinRoom(e);
-			// JassapClient._client.joinRoom(list.getSelectedValue());
+			JassapClient.client.joinRoom(getSelectedValue());
 		}
 		
 	}
