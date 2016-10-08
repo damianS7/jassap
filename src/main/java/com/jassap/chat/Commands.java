@@ -16,6 +16,10 @@
  */
 package com.jassap.chat;
 
+/**
+ * Comandos disponibles para utilizar en el chat
+ * @author danjian
+ */
 public enum Commands {
 	SHUTDOWN_SERVER,
 	RESTART_SERVER,
@@ -24,5 +28,18 @@ public enum Commands {
 	BAN_USER,
 	MUTE_ROOM,
 	MUTE_USER,
-	ALL
+	ALL;
+	
+	public boolean usableCommand(Roles role, Commands cmd) {
+		if(role == Roles.ADMIN) {
+			return true;
+		}
+		
+		if(role == Roles.ADMIN) {
+			return true;
+		}
+		
+		return false;
+	}
+	
 }

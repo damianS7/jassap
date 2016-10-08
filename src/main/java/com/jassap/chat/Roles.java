@@ -20,5 +20,5 @@ public enum Roles {
 	ADMIN, // Control sobre todo 
 	SUPERMOD, // Moderador en todas las salas
 	MOD, // Moderador en una o varias salas
-	USER // Nada
+	USER; // Nada
 }
