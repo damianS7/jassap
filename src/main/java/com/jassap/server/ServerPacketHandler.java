@@ -16,16 +16,26 @@
  */
 package com.jassap.server;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.jassap.chat.Room;
 import com.jassap.database.Account;
 import com.jassap.network.DataPacket;
 import com.jassap.network.Packet;
 import com.jassap.network.PacketHandler;
 import com.jassap.network.packets.LoginRequest;
 import com.jassap.network.packets.LoginResponse;
+import com.jassap.network.packets.RoomJoinRequest;
+import com.jassap.network.packets.RoomJoinResponse;
+import com.jassap.network.packets.RoomMessage;
+import com.jassap.network.packets.RoomsRequest;
+import com.jassap.network.packets.RoomsResponse;
 
 /**
- * Procesa los paquetes que el servidor recibe de los clientes y lo hace en 
+ * Procesa los paquetes que el servidor recibe de los clientes y lo hace en
  * orden de llegada.
+ * 
  * @author danjian
  */
 public class ServerPacketHandler extends PacketHandler implements Runnable {
@@ -39,28 +49,64 @@ public class ServerPacketHandler extends PacketHandler implements Runnable {
 	@Override
 	protected void handlePacket(DataPacket dp) {
 		Packet p = dp.getPacket();
-		
+
 		System.out.println(p);
-		
-		if(p instanceof LoginRequest) {
+
+		if (p instanceof LoginRequest) {
 			LoginRequest lr = (LoginRequest) p;
 			Account acc = new Account(lr.getUsername(), lr.getPassword());
 			Login login = new Login(acc);
-			
-			LoginResponse lrp = new LoginResponse(login.isValid(), 
-					login.getAccount().getRole());
-			
+
+			LoginResponse lrp = new LoginResponse(login.isValid(), login
+					.getAccount().getRole());
+
 			// Se añade como cliente
-			if(lrp.isLogged()) {
+			if (lrp.isLogged()) {
+				System.out.println(lr.getUsername() + " success login");
 				ServerUser su = new ServerUser(dp.getSender(), acc);
+				System.out.println(su.getAccount().getUser());
 				JassapServer.server.addUser(su);
 			}
-			
+
 			dp.getSender().sendPacket(lrp);
 			return;
+		}
+
+		// El cliente pide la lista de salas disponibles
+		if (p instanceof RoomsRequest) {
+			List<String> roomsNames = new ArrayList<String>();
+
+			for (Room room : JassapServer.server.getRooms()) {
+				roomsNames.add(room.getName());
+			}
+
+			RoomsResponse rr = new RoomsResponse(roomsNames);
+			dp.getSender().sendPacket(rr);
+			return;
+		}
+
+		if (p instanceof RoomJoinRequest) {
+			RoomJoinRequest join = (RoomJoinRequest) p;
 			
+			List<String> fakeList = new ArrayList<String>();
+			for (int i = 0; i < 54; i++) {
+				fakeList.add("User" + i);
+			}
+			RoomJoinResponse rjr = new RoomJoinResponse(join.getRoom(), fakeList);
+			
+			Room r = JassapServer.server.getRoom(join.getRoom());
+			r.addUser(JassapServer.server.getUser(join.getUsername()));
+			//RoomJoinResponse rjr = new RoomJoinResponse(join.getRoom(), r.getUserList());
+			dp.getSender().sendPacket(rjr);
 		}
 		
+		if(p instanceof RoomMessage) {
+			RoomMessage rm = (RoomMessage) p;
+			Room room = JassapServer.server.getRoom(rm.getRoom());
+			room.difusion(rm.getSender(), rm.getMessage());
+			return;
+		}
+
 		super.handlePacket(dp);
 	}
 

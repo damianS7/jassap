@@ -25,6 +25,7 @@ import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
+import com.jassap.chat.Room;
 import com.jassap.database.AccountDatabase;
 import com.jassap.database.RoomDatabase;
 import com.jassap.network.User;
@@ -44,8 +45,31 @@ public class JassapServer extends Server {
 	public static RoomDatabase roomDatabase;
 	public static AccountDatabase accountDatabase;
 	private List<ServerUser> users = new ArrayList<ServerUser>();
+	private List<Room> rooms = new ArrayList<Room>();
 	private int maxUsers = 150;
 	
+	public List<Room> getRooms() {
+		return new ArrayList<Room>(rooms);
+	}
+	
+	public ServerUser getUser(String name) {
+		for (ServerUser user : users) {
+			if(user.getAccount().getUser().equals(name)) {
+				return user;
+			}
+		}
+		return null;
+	}
+	
+	public Room getRoom(String roomName) {
+		for (Room room : rooms) {
+			if(room.getName().equals(roomName)) {
+				return room;
+			}
+		}
+		
+		return null;
+	}
 	
 	public int countUsers() {
 		return users.size();
@@ -156,5 +180,6 @@ public class JassapServer extends Server {
 		// Instancia servidor
 		LOGGER.info("Starting server ... ");
 		server = new JassapServer();
+		server.rooms = roomDatabase.getRooms();
 	}
 }
