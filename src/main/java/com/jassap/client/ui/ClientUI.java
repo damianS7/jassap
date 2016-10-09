@@ -45,6 +45,7 @@ import javax.swing.JLabel;
 public class ClientUI {
 	public JFrame frame;
 	public MenuBar menuBar;
+	public LogTab log;
 	private JTabbedPane tabbedPane;
 
 	// Lista (JList) con los nombres de las salas
@@ -62,8 +63,9 @@ public class ClientUI {
 		frame = new JFrame();
 		menuBar = new MenuBar();
 		rooms = new RoomList();
+		log = new LogTab("Server log");
 		initComponents();
-		addTab(new LogTab("Server log"));
+		addTab(log);
 		
 		panel = new JPanel();
 		FlowLayout flowLayout = (FlowLayout) panel.getLayout();

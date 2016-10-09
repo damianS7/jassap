@@ -24,6 +24,7 @@ import com.jassap.database.Account;
 import com.jassap.network.DataPacket;
 import com.jassap.network.Packet;
 import com.jassap.network.PacketHandler;
+import com.jassap.network.packets.Disconnect;
 import com.jassap.network.packets.LoginRequest;
 import com.jassap.network.packets.LoginResponse;
 import com.jassap.network.packets.RoomJoinRequest;
@@ -59,16 +60,19 @@ public class ServerPacketHandler extends PacketHandler implements Runnable {
 
 			LoginResponse lrp = new LoginResponse(login.isValid(), login
 					.getAccount().getRole());
-
-			// Se añade como cliente
-			if (lrp.isLogged()) {
-				System.out.println(lr.getUsername() + " success login");
-				ServerUser su = new ServerUser(dp.getSender(), acc);
-				System.out.println(su.getAccount().getUser());
-				JassapServer.server.addUser(su);
+			
+			// Si los datos son invalidos desconectamos al cliente
+			if (!lrp.isLogged()) {
+				Disconnect d = new Disconnect("Invalid login credentials.");
+				dp.getSender().sendPacket(d);
+				dp.getSender().close();
+				return;
 			}
-
+			
+			ServerUser su = new ServerUser(dp.getSender(), acc);
+			JassapServer.server.addUser(su);
 			dp.getSender().sendPacket(lrp);
+			
 			return;
 		}
 

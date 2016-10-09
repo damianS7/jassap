@@ -21,6 +21,7 @@ import com.jassap.client.ui.TabChat;
 import com.jassap.network.DataPacket;
 import com.jassap.network.Packet;
 import com.jassap.network.PacketHandler;
+import com.jassap.network.packets.Disconnect;
 import com.jassap.network.packets.Kick;
 import com.jassap.network.packets.LoginResponse;
 import com.jassap.network.packets.RoomJoinResponse;
@@ -84,6 +85,11 @@ public class ClientPacketHandler extends PacketHandler {
 			return;
 		}
 		
+		if (p instanceof Disconnect) {
+			JassapClient.client.disconnect();
+			Disconnect d = (Disconnect) p;
+			JassapClient.ui.log.addText("Disconnected by Server. reason: " + d.getReason());
+		}
 		
 		super.handlePacket(dp);
 	}

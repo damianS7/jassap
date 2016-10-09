@@ -18,8 +18,6 @@ package com.jassap.server;
 
 import com.jassap.database.Account;
 import com.jassap.network.Connection;
-import com.jassap.network.DataPacket;
-import com.jassap.network.Packet;
 import com.jassap.network.User;
 
 /**

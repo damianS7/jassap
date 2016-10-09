@@ -29,6 +29,7 @@ import com.jassap.chat.Room;
 import com.jassap.database.AccountDatabase;
 import com.jassap.database.RoomDatabase;
 import com.jassap.network.User;
+import com.jassap.network.packets.Disconnect;
 import com.jassap.server.ui.ServerUI;
 
 /**
@@ -91,16 +92,22 @@ public class JassapServer extends Server {
 			//kick(user);
 		//}
 	}
+	
+	public void removeUser(ServerUser user) {
+		ui.statsBar.setUsers(countUsers());
+	}
 
 	public boolean addUser(ServerUser user) {
-		//if (!super.addUser(user)) {
-			// Enviar paquete al cliente avisando de que el servidor esta lleno?
-		//}
+		ui.statsBar.setUsers(countUsers());
 		
 		if (countUsers() >= maxUsers) {
+			// Avisa de que el servidor esta lleno y se le desconecta
+			Disconnect d = new Disconnect("Server is full");
+			user.getConnection().sendPacket(d);
+			user.getConnection().close();
 			return false;
 		}
-		//new Thread(connection).start();
+		users.add(user);
 		return false;
 	}
 

@@ -25,4 +25,18 @@ import com.jassap.network.Packet;
  */
 public class Disconnect extends Packet {
 	private static final long serialVersionUID = -552390140544585668L;
+	private String reason;
+	
+	public Disconnect() {
+		this("");
+	}
+	
+	public Disconnect(String reason) {
+		this.reason = reason;
+	}
+	
+	public String getReason() {
+		return reason;
+	}
+	
 }

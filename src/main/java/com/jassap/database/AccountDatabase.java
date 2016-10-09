@@ -105,7 +105,7 @@ public class AccountDatabase extends JsonDatabase {
 		for (Account acc : getAccounts()) {
 			JSONObject accData = new JSONObject();
 			accData.put("password", acc.getPass());
-			accData.put("password", acc.getRole());
+			accData.put("role", acc.getRole());
 			jsonData.put(acc.getUser(), accData);
 		}
 

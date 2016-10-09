@@ -18,6 +18,7 @@
 package com.jassap.server.ui;
 
 import javax.swing.JPanel;
+
 import net.miginfocom.swing.MigLayout;
 
 import java.awt.Color;
@@ -27,11 +28,15 @@ import java.beans.PropertyChangeListener;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
+import com.jassap.server.Uptimer;
+
 public class StatsBar extends JPanel {
 	private static final long serialVersionUID = -4568155395088704811L;
 	private JLabel status;
 	private JLabel users;
 	private JLabel uptime;
+	private Uptimer uptimer;
+	private Thread uptimeThread;
 
 	public StatsBar() {
 		super();
@@ -59,9 +64,24 @@ public class StatsBar extends JPanel {
 				// Color para online
 				if (status.getText().equals("Online")) {
 					status.setForeground(Color.GREEN);
+					uptimer = new Uptimer();
+					uptimeThread = new Thread(new Runnable() {
+						@Override
+						public void run() {
+							while(true) {
+								uptime.setText(uptimer.getTimer());
+							}
+						}
+					});
+					uptimeThread.start();
+					uptimer.start();
 				} else {
 					// Color para el resto de estados
 					status.setForeground(Color.RED);
+					if(uptimeThread != null) {
+						uptimer.stop();
+						uptimeThread.interrupt();
+					}
 				}
 			}
 		});
@@ -79,9 +99,4 @@ public class StatsBar extends JPanel {
 	public void setUsers(int n) {
 		users.setText(Integer.toString(n));
 	}
-	
-	public void setUptime(String uptime) {
-		//new Thread
-	}
-	
 }

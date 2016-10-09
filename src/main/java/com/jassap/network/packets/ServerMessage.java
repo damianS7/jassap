@@ -14,23 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.jassap.client.ui;
-import net.miginfocom.swing.MigLayout;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.ScrollPaneConstants;
+package com.jassap.network.packets;
 
-public class LogTab extends TabChat {
+import com.jassap.network.Packet;
 
-	public LogTab(String title) {
-		super(title);
-		setLayout(new MigLayout("", "[grow]", "[grow]"));
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		add(scrollPane, "cell 0 0,grow");
-		scrollPane.setViewportView(outputBox);
-		outputBox.setEditable(false);
+public class ServerMessage extends Packet {
+	private static final long serialVersionUID = -7601694841623071400L;
+	private String message;
+	
+	public ServerMessage(String message) {
+		this.message = message;
 	}
 	
-	
+	public String getMessage() {
+		return message;
+	}
 }
