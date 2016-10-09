@@ -14,12 +14,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.jassap.chat;
+package com.jassap.network.packets;
 
-public enum Roles {
-	ADMIN, // Control sobre todo 
-	SUPERMOD, // Moderador en todas las salas
-	MOD, // Moderador en una o varias salas
-	SYSTEM,
-	USER; // Nada
+import com.jassap.network.Packet;
+
+public class Help extends Packet {
+	private String help;
+
+	public Help(String text) {
+		this.help = text;
+		help = "Commands list\n"
+				+ "/kick <user>"
+				+ "/ban <user> <time>"
+				+ "/mute <user> <time>"
+				+ "/muteroom <time>"
+				+ "";
+	}
+	
+	public String getHelp() {
+		return help;
+	}
 }

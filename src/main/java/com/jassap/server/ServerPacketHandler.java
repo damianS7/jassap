@@ -24,6 +24,8 @@ import com.jassap.database.Account;
 import com.jassap.network.DataPacket;
 import com.jassap.network.Packet;
 import com.jassap.network.PacketHandler;
+import com.jassap.network.User;
+import com.jassap.network.packets.ConversationMessage;
 import com.jassap.network.packets.Disconnect;
 import com.jassap.network.packets.LoginRequest;
 import com.jassap.network.packets.LoginResponse;
@@ -109,6 +111,10 @@ public class ServerPacketHandler extends PacketHandler implements Runnable {
 			Room room = JassapServer.server.getRoom(rm.getRoom());
 			room.difusion(rm.getSender(), rm.getMessage());
 			return;
+		}
+		
+		if (p instanceof ConversationMessage) {
+			User u = JassapServer.server.getUser("");
 		}
 
 		super.handlePacket(dp);

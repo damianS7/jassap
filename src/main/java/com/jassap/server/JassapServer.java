@@ -45,7 +45,7 @@ public class JassapServer extends Server {
 	public static ServerProperties serverProperties;
 	public static RoomDatabase roomDatabase;
 	public static AccountDatabase accountDatabase;
-	private List<ServerUser> users = new ArrayList<ServerUser>();
+	private List<User> users = new ArrayList<User>();
 	private List<Room> rooms = new ArrayList<Room>();
 	private int maxUsers = 150;
 	
@@ -53,8 +53,12 @@ public class JassapServer extends Server {
 		return new ArrayList<Room>(rooms);
 	}
 	
-	public ServerUser getUser(String name) {
-		for (ServerUser user : users) {
+	public List<User> getUsers() {
+		return new ArrayList<User>(users);
+	}
+	
+	public User getUser(String name) {
+		for (User user : users) {
 			if(user.getAccount().getUser().equals(name)) {
 				return user;
 			}
@@ -93,11 +97,11 @@ public class JassapServer extends Server {
 		//}
 	}
 	
-	public void removeUser(ServerUser user) {
+	public void removeUser(User user) {
 		ui.statsBar.setUsers(countUsers());
 	}
 
-	public boolean addUser(ServerUser user) {
+	public boolean addUser(User user) {
 		ui.statsBar.setUsers(countUsers());
 		
 		if (countUsers() >= maxUsers) {

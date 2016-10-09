@@ -16,6 +16,9 @@
  */
 package com.jassap.network.packets;
 
+import java.awt.Color;
+
+import com.jassap.chat.Roles;
 import com.jassap.network.Packet;
 
 /**
@@ -25,13 +28,41 @@ import com.jassap.network.Packet;
 public class RoomMessage extends Packet {
 	private static final long serialVersionUID = 3116327084898693224L;
 	private String sender;
+	private Roles senderRole;
 	private String message;
 	private String room;
 	
 	public RoomMessage(String sender, String message, String room) {
+		this(sender, Roles.USER, message, room);
+	}
+	
+	public RoomMessage(String sender, Roles senderRole, String message, String room) {
 		this.sender = sender;
 		this.message = message;
 		this.room = room;
+		this.senderRole = senderRole;
+	}
+	
+	public Color getColor() {
+		Color color = Color.BLACK;
+		switch (senderRole) {
+		case ADMIN:
+			color = Color.GREEN;
+			break;
+		case SUPERMOD:
+			color = Color.BLUE;
+			break;
+		case MOD:
+			color = Color.MAGENTA;
+			break;
+		default:
+			break;
+		}
+		return color;
+	}
+	
+	public Roles getSenderRole() {
+		return senderRole;
 	}
 	
 	public String getMessage() {
