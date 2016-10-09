@@ -29,6 +29,7 @@ import com.jassap.network.packets.ConversationMessage;
 import com.jassap.network.packets.Disconnect;
 import com.jassap.network.packets.LoginRequest;
 import com.jassap.network.packets.LoginResponse;
+import com.jassap.network.packets.RoomExit;
 import com.jassap.network.packets.RoomJoinRequest;
 import com.jassap.network.packets.RoomJoinResponse;
 import com.jassap.network.packets.RoomMessage;
@@ -62,7 +63,7 @@ public class ServerPacketHandler extends PacketHandler implements Runnable {
 
 			LoginResponse lrp = new LoginResponse(login.isValid(), login
 					.getAccount().getRole());
-			
+
 			// Si los datos son invalidos desconectamos al cliente
 			if (!lrp.isLogged()) {
 				Disconnect d = new Disconnect("Invalid login credentials.");
@@ -70,11 +71,11 @@ public class ServerPacketHandler extends PacketHandler implements Runnable {
 				dp.getSender().close();
 				return;
 			}
-			
+
 			ServerUser su = new ServerUser(dp.getSender(), acc);
 			JassapServer.server.addUser(su);
 			dp.getSender().sendPacket(lrp);
-			
+
 			return;
 		}
 
@@ -93,30 +94,53 @@ public class ServerPacketHandler extends PacketHandler implements Runnable {
 
 		if (p instanceof RoomJoinRequest) {
 			RoomJoinRequest join = (RoomJoinRequest) p;
-			
+
 			List<String> fakeList = new ArrayList<String>();
 			for (int i = 0; i < 54; i++) {
 				fakeList.add("User" + i);
 			}
-			RoomJoinResponse rjr = new RoomJoinResponse(join.getRoom(), fakeList);
-			
+			// RoomJoinResponse rjr = new RoomJoinResponse(join.getRoom(),
+			// r.getUserList());
+			RoomJoinResponse rjr = new RoomJoinResponse(join.getRoom(),
+					fakeList);
+
 			Room r = JassapServer.server.getRoom(join.getRoom());
 			r.addUser(JassapServer.server.getUser(join.getUsername()));
-			//RoomJoinResponse rjr = new RoomJoinResponse(join.getRoom(), r.getUserList());
 			dp.getSender().sendPacket(rjr);
+			return;
 		}
-		
-		if(p instanceof RoomMessage) {
+
+		if (p instanceof RoomMessage) {
 			RoomMessage rm = (RoomMessage) p;
 			Room room = JassapServer.server.getRoom(rm.getRoom());
 			room.difusion(rm.getSender(), rm.getMessage());
 			return;
 		}
-		
+
+		// from rhaegon to user0
 		if (p instanceof ConversationMessage) {
-			User u = JassapServer.server.getUser("");
+			ConversationMessage cm = (ConversationMessage) p;
+			User to = JassapServer.server.getUser(cm.getTo());
+			
+			if (to != null) {
+				ConversationMessage cms = new ConversationMessage(cm.getFrom(),
+						null, cm.getMessage());
+				to.getConnection().sendPacket(cms);
+			}
+			
+			dp.getSender().sendPacket(cm);
+			return;
 		}
 
+		if(p instanceof RoomExit) {
+			RoomExit re = (RoomExit) p;
+			Room room = JassapServer.server.getRoom(re.getRoom());
+			User u = JassapServer.server.getUser(re.getUser());
+			room.removeUser(u);
+			dp.getSender().sendPacket(re);
+			return;
+		}
+		
 		super.handlePacket(dp);
 	}
 

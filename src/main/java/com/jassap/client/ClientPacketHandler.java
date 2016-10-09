@@ -16,14 +16,17 @@
  */
 package com.jassap.client;
 
+import com.jassap.client.ui.ConversationTab;
 import com.jassap.client.ui.RoomTab;
 import com.jassap.client.ui.TabChat;
 import com.jassap.network.DataPacket;
 import com.jassap.network.Packet;
 import com.jassap.network.PacketHandler;
+import com.jassap.network.packets.ConversationMessage;
 import com.jassap.network.packets.Disconnect;
 import com.jassap.network.packets.Kick;
 import com.jassap.network.packets.LoginResponse;
+import com.jassap.network.packets.RoomExit;
 import com.jassap.network.packets.RoomJoinResponse;
 import com.jassap.network.packets.RoomMessage;
 import com.jassap.network.packets.RoomsResponse;
@@ -37,6 +40,26 @@ public class ClientPacketHandler extends PacketHandler {
 	@Override
 	protected void handlePacket(DataPacket dp) {
 		Packet p = dp.getPacket();
+		
+		// Salida de una sala
+		if (p instanceof RoomExit) {
+			RoomExit re = (RoomExit) p;
+			TabChat tc = JassapClient.ui.getTab(re.getRoom());
+			JassapClient.ui.removeTab(tc);
+			return;
+		}
+		
+		// Conversacion
+		if (p instanceof ConversationMessage) {
+			ConversationMessage cm = (ConversationMessage) p;
+			TabChat tc = JassapClient.ui.getTab(cm.getTo());
+			
+			if(tc instanceof ConversationTab) {
+				ConversationTab ct = (ConversationTab) tc;
+				ct.addText(cm.getFrom() + ":" + cm.getMessage());
+			}
+			return;
+		}
 		
 		// Respuesta a una peticion de login
 		if (p instanceof LoginResponse) {

@@ -83,9 +83,9 @@ public class Room {
 				return;
 			}
 
-			rm = new RoomMessage(from, u.getAccount().getRole(), message, name);
+			rm = new RoomMessage(name, from, message, u.getAccount().getRole());
 		} else {
-			rm = new RoomMessage(from, Roles.SYSTEM, message, name);
+			rm = new RoomMessage(name, from, message, Roles.SYSTEM);
 		}
 
 		for (User user : users) {
@@ -130,6 +130,11 @@ public class Room {
 	 * @param user
 	 */
 	public void addUser(User user) {
+		// Si el usuario ya esta en la sala ...
+		if(users.contains(user)) {
+			return;
+		}
+		
 		Ban ban = isBanned(user.getAccount().getUser());
 
 		if (ban instanceof Ban) {
@@ -145,8 +150,8 @@ public class Room {
 	}
 
 	public void removeUser(User user) {
-		difusion("System: ", user.getAccount().getUser() + " sale de la sala.");
 		users.remove(user);
+		difusion("System", user.getAccount().getUser() + " sale de la sala.");
 	}
 
 	/**

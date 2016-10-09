@@ -113,6 +113,12 @@ public class ClientUI {
 	
 	// Añade un  tab a la lista y al tabbedPane
 	public void addTab(TabChat tab) {
+		// Ya existe un tab con este nombre
+		if(getTab(tab.getTitle()) != null) {
+			tabbedPane.setSelectedComponent(getTab(tab.getTitle()));
+			return;
+		}
+		
 		tabs.add(tab);
 		tabbedPane.add(tab.getTitle(), tab);
 		tabbedPane.setSelectedComponent(tab);

@@ -112,7 +112,17 @@ public abstract class Server implements Runnable {
 	 *         incidencias
 	 */
 	public boolean restart() {
-		if (stop() && start()) {
+		if(!stop()) {
+			return false;
+		}
+		
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		if (start()) {
 			return true;
 		}
 

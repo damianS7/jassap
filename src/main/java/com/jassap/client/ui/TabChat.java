@@ -41,6 +41,12 @@ public abstract class TabChat extends JPanel {
 	}
 	
 	public void addText(String text) {
-		outputBox.append(text + "\n");
+		if(!text.endsWith("\n")) {
+			text += "\n";
+		}
+		outputBox.append(text);
+		outputBox.setCaretPosition(outputBox.getDocument().getLength());
 	}
+	
+	public abstract void sendMessage();
 }

@@ -33,13 +33,11 @@ import com.jassap.client.JassapClient;
 
 public class RoomTab extends TabChat {
 	private static final long serialVersionUID = -7400661692831081968L;
-	private RoomTab instance;
 	private UserList list;
 
 	public RoomTab(String title) {
 		super(title);
 		list = new UserList();
-		instance = this;
 		outputBox.setEditable(false);
 		setLayout(new MigLayout("", "[332px,grow][100px]", "[202px,grow][80px]"));
 
@@ -62,13 +60,19 @@ public class RoomTab extends TabChat {
 		panel.setLayout(new MigLayout("", "[grow]", "[][]"));
 
 		JButton btnSend = new JButton("Send");
+		btnSend.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				sendMessage();
+			}
+		});
 		panel.add(btnSend, "cell 0 0,growx,aligny top");
 
 		JButton btnExit = new JButton("Exit");
 		btnExit.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JassapClient.ui.removeTab(instance);
+				JassapClient.client.exitRoom(getTitle());
 			}
 		});
 		panel.add(btnExit, "cell 0 1,growx,aligny top");
@@ -82,9 +86,7 @@ public class RoomTab extends TabChat {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				if (e.getKeyCode() == 10) {
-					JassapClient.client.sendRoomMessage(inputBox.getText(), getTitle());
-					inputBox.setText("");
-					return;
+					sendMessage();
 				}
 			}
 
@@ -100,5 +102,11 @@ public class RoomTab extends TabChat {
 
 	public UserList getList() {
 		return list;
+	}
+	
+	@Override
+	public void sendMessage() {
+		JassapClient.client.sendRoomMessage(getTitle(), inputBox.getText());
+		inputBox.setText("");
 	}
 }

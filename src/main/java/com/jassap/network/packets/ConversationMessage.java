@@ -24,12 +24,18 @@ import com.jassap.network.Packet;
  */
 public class ConversationMessage extends Packet {
 	private static final long serialVersionUID = -1868074765721429692L;
+	private String message;
 	private String from;
 	private String to;
 	
-	public ConversationMessage(String from, String to) {
+	public ConversationMessage(String from, String to, String message) {
 		this.from = from;
 		this.to = to;
+		this.message = message;
+	}
+	
+	public String getMessage() {
+		return message;
 	}
 	
 	public String getFrom() {

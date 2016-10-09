@@ -20,10 +20,14 @@ import java.awt.EventQueue;
 import java.io.File;
 
 import com.jassap.client.ui.ClientUI;
+import com.jassap.network.packets.ConversationMessage;
+import com.jassap.network.packets.RoomExit;
 import com.jassap.network.packets.RoomJoinRequest;
 import com.jassap.network.packets.RoomMessage;
+
 /**
- * Clase principal del chat 
+ * Clase principal del chat
+ * 
  * @author danjian
  */
 public class JassapClient extends Client {
@@ -31,23 +35,31 @@ public class JassapClient extends Client {
 	public static JassapClient client;
 	public static ClientProperties clientProperties;
 	public static ClientUI ui;
-	
+
 	public void joinRoom(String room) {
-		RoomJoinRequest rjr = new RoomJoinRequest(room, client.getClientUser().getAccount().getUser());
+		RoomJoinRequest rjr = new RoomJoinRequest(room, client.getClientUser()
+				.getAccount().getUser());
 		client.getClientUser().getConnection().sendPacket(rjr);
 	}
-	
-	public void exitRoom() {
+
+	public void exitRoom(String room) {
+		RoomExit re = new RoomExit(room, client.getClientUser().getAccount()
+				.getUser());
+		client.getClientUser().getConnection().sendPacket(re);
 	}
-	
-	public void sendRoomMessage(String message, String room) {
-		RoomMessage rm = new RoomMessage(client.getClientUser().getAccount().getUser(), message, room);
+
+	public void sendRoomMessage(String room, String message) {
+		RoomMessage rm = new RoomMessage(room, client.getClientUser().getAccount()
+				.getUser(), message);
 		client.getClientUser().getConnection().sendPacket(rm);
 	}
-	
-	public void sendConversationMessage() {
+
+	public void sendConversationMessage(String to, String message) {
+		ConversationMessage cm = new ConversationMessage(client.getClientUser()
+				.getAccount().getUser(), to, message);
+		client.getClientUser().getConnection().sendPacket(cm);
 	}
-	
+
 	public static void main(String[] args) throws Exception {
 		File actualDir = new File(".");
 

@@ -33,6 +33,7 @@ import com.jassap.exceptions.ConnectionLostException;
  */
 public abstract class Connection implements Runnable {
 	private Socket socket;
+	private boolean ended = false;
 	
 	public Connection(Socket socket) {
 		this.socket = socket;
@@ -50,7 +51,7 @@ public abstract class Connection implements Runnable {
 	 * correcta.
 	 */
 	public boolean isAlive() {
-		if(socket.isClosed()) {
+		if(socket.isClosed() || ended == true) {
 			return false;
 		}
 		return true;
@@ -166,7 +167,7 @@ public abstract class Connection implements Runnable {
 			}
 		}
 		*/
-		
+		ended = true;
 		System.out.println("Conexion terminada");
 	}
 	

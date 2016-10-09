@@ -36,5 +36,4 @@ public class ServerConnection extends Connection {
 	public void processPacket(DataPacket dp) {
 		JassapServer.server.sph.handlePacket(dp);
 	}
-
 }

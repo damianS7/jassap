@@ -45,20 +45,19 @@ public class JassapServer extends Server {
 	public static ServerProperties serverProperties;
 	public static RoomDatabase roomDatabase;
 	public static AccountDatabase accountDatabase;
-	private List<User> users = new ArrayList<User>();
+	private List<ServerUser> users = new ArrayList<ServerUser>();
 	private List<Room> rooms = new ArrayList<Room>();
-	private int maxUsers = 150;
 	
 	public List<Room> getRooms() {
 		return new ArrayList<Room>(rooms);
 	}
 	
-	public List<User> getUsers() {
-		return new ArrayList<User>(users);
+	public List<ServerUser> getUsers() {
+		return new ArrayList<ServerUser>(users);
 	}
 	
-	public User getUser(String name) {
-		for (User user : users) {
+	public ServerUser getUser(String name) {
+		for (ServerUser user : users) {
 			if(user.getAccount().getUser().equals(name)) {
 				return user;
 			}
@@ -83,8 +82,10 @@ public class JassapServer extends Server {
 	/*
 	 * Expulsa del servidor a un usuario cerrando la conexion (socket)
 	 */
-	public void kick(User user) {
-
+	public void kick(ServerUser user) {
+		removeUser(user);
+		Disconnect d = new Disconnect("Server kick.");
+		user.getConnection().sendPacket(d);
 	}
 
 	/*
@@ -92,19 +93,19 @@ public class JassapServer extends Server {
 	 */
 	@Override
 	public void kickAll() {
-		//for (User user : getUsers()) {
-			//kick(user);
-		//}
+		for (ServerUser user : getUsers()) {
+			kick(user);
+		}
+		super.kickAll();
 	}
 	
-	public void removeUser(User user) {
+	public void removeUser(ServerUser user) {
+		users.remove(user);
 		ui.statsBar.setUsers(countUsers());
 	}
 
-	public boolean addUser(User user) {
-		ui.statsBar.setUsers(countUsers());
-		
-		if (countUsers() >= maxUsers) {
+	public boolean addUser(ServerUser user) {
+		if (countUsers() >= maxConnections) {
 			// Avisa de que el servidor esta lleno y se le desconecta
 			Disconnect d = new Disconnect("Server is full");
 			user.getConnection().sendPacket(d);
@@ -112,6 +113,8 @@ public class JassapServer extends Server {
 			return false;
 		}
 		users.add(user);
+		new Thread(user).start();
+		ui.statsBar.setUsers(countUsers());
 		return false;
 	}
 

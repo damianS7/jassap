@@ -23,9 +23,19 @@ import com.jassap.network.User;
 /**
  * @author danjian
  */
-public class ServerUser extends User {
+public class ServerUser extends User implements Runnable {
 	public ServerUser(Connection connection, Account account) {
 		super(connection);
 		this.account = account;
+	}
+
+	@Override
+	public void run() {
+		while(getConnection().isAlive()) {
+			if(!getConnection().isAlive()) {
+				break;
+			}
+		}
+		JassapServer.server.removeUser(this);
 	}
 }

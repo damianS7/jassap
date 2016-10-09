@@ -32,11 +32,11 @@ public class RoomMessage extends Packet {
 	private String message;
 	private String room;
 	
-	public RoomMessage(String sender, String message, String room) {
-		this(sender, Roles.USER, message, room);
+	public RoomMessage(String room, String sender, String message) {
+		this(room, sender, message, Roles.USER);
 	}
 	
-	public RoomMessage(String sender, Roles senderRole, String message, String room) {
+	public RoomMessage(String room, String sender, String message, Roles senderRole) {
 		this.sender = sender;
 		this.message = message;
 		this.room = room;

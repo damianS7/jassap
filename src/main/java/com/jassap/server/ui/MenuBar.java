@@ -167,21 +167,23 @@ public class MenuBar {
 	}
 	
 	protected void kickAll() {
+		JassapServer.server.kickAll();;
 	}
 
 	protected void showAbout() {
 	}
-
-
 	
 	protected void restart() {
-		// restartt
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				JassapServer.server.restart();
+			}
+		}).start();
 	}
 	
 	protected void exit() {
 		stop();
 		System.exit(0);
 	}
-	
-	
 }

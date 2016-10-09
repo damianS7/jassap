@@ -37,6 +37,7 @@ public class RoomList extends JassapList {
 	}
 	
 	public void addRooms(List<String> rooms) {
+		clearRooms();
 		for (String room : rooms) {
 			addRoom(room);
 		}
