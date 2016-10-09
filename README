@@ -1,3 +1,10 @@
-<strong>Que es esto?</strong>
-[b]sdfssdfdf[/b]
-Esta aplicacion es un chat diseñado en java.
+Que es esto?
+Esta aplicacion es un chat diseñado en java, es un programa de "prueba" pero
+es funcional y cumple su cometido.
+
+Caracteristicas
+- Sistema de salas
+- Posibilidad de Mutear y Banear usuarios de las salas
+- Sistema de privilegios
+- Consola de comandos
+- Conversaciones privadas entre usuarios
