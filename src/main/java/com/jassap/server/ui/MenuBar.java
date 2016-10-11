@@ -164,6 +164,7 @@ public class MenuBar {
 	}
 	
 	protected void editConnections() {
+		new Connections();
 	}
 	
 	protected void kickAll() {

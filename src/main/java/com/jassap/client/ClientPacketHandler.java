@@ -74,7 +74,7 @@ public class ClientPacketHandler extends PacketHandler {
 			TabChat tc = JassapClient.ui.getTab(k.getRoom());
 			if(tc instanceof RoomTab) {
 				RoomTab rt = (RoomTab) tc;
-				rt.addText("Kicked by: " + k.getKickedBy() + ". reason: " + 
+				rt.addText("Kicked by: " + k.getBy() + ". reason: " + 
 				k.getReason());
 			}
 			return;

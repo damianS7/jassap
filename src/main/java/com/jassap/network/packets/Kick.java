@@ -23,22 +23,28 @@ import com.jassap.network.Packet;
  */
 public class Kick extends Packet {
 	private static final long serialVersionUID = -8983058122845285595L;
+	private String by;
 	private String reason;
-	private String kickedBy;
 	private String room;
+	private String target;
 	
-	public Kick(String kickedBy, String reason, String room) {
+	public Kick(String by, String target, String reason, String room) {
+		this.target = target;
 		this.reason = reason;
 		this.room = room;
-		this.kickedBy = kickedBy;
+		this.by = by;
+	}
+	
+	public String getTarget() {
+		return target;
 	}
 	
 	public String getReason() {
 		return reason;
 	}
 	
-	public String getKickedBy() {
-		return kickedBy;
+	public String getBy() {
+		return by;
 	}
 	
 	public String getRoom() {

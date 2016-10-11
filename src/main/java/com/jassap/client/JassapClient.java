@@ -20,7 +20,10 @@ import java.awt.EventQueue;
 import java.io.File;
 
 import com.jassap.client.ui.ClientUI;
+import com.jassap.network.packets.Ban;
 import com.jassap.network.packets.ConversationMessage;
+import com.jassap.network.packets.Kick;
+import com.jassap.network.packets.Mute;
 import com.jassap.network.packets.RoomExit;
 import com.jassap.network.packets.RoomJoinRequest;
 import com.jassap.network.packets.RoomMessage;
@@ -35,6 +38,25 @@ public class JassapClient extends Client {
 	public static JassapClient client;
 	public static ClientProperties clientProperties;
 	public static ClientUI ui;
+	
+	public void kick(String room, String user, String reason) {
+		Kick k = new Kick(client.getClientUser().getAccount().getUser(), user,
+				reason, room);
+		client.getClientUser().getConnection().sendPacket(k);
+	}
+	
+	public void mute(String room, String user, int time, String reason) {
+		Mute m = new Mute(client.getClientUser().getAccount().getUser(), 
+				user, reason, room, time);
+		client.getClientUser().getConnection().sendPacket(m);
+	}
+	
+	public void ban(String room, String user, int time, String reason) {
+		Ban b = new Ban(client.getClientUser().getAccount().getUser(), 
+				user, reason, room, time);
+		client.getClientUser().getConnection().sendPacket(b);
+		kick(room, user, reason);
+	}
 
 	public void joinRoom(String room) {
 		RoomJoinRequest rjr = new RoomJoinRequest(room, client.getClientUser()

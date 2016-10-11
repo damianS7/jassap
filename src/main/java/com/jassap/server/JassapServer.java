@@ -65,6 +65,15 @@ public class JassapServer extends Server {
 		return null;
 	}
 	
+	public ServerUser getUserByIp(String ip) {
+		for (ServerUser user : users) {
+			if(user.getConnection().getAddress().equals(ip)) {
+				return user;
+			}
+		}
+		return null;
+	}
+	
 	public Room getRoom(String roomName) {
 		for (Room room : rooms) {
 			if(room.getName().equals(roomName)) {
@@ -83,6 +92,7 @@ public class JassapServer extends Server {
 	 * Expulsa del servidor a un usuario cerrando la conexion (socket)
 	 */
 	public void kick(ServerUser user) {
+		System.out.println("kiking");
 		removeUser(user);
 		Disconnect d = new Disconnect("Server kick.");
 		user.getConnection().sendPacket(d);

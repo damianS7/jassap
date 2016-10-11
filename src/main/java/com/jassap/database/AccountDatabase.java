@@ -84,8 +84,8 @@ public class AccountDatabase extends JsonDatabase {
 
 		for (String username : jsonData.keySet()) {
 			String password = jsonData.getJSONObject(username).getString("password");
-			//Roles role = Privileges.valueOf(jsonData.getJSONObject(username).getString("role"));
-			Roles role = Roles.USER;
+			Roles role = Roles.valueOf(jsonData.getJSONObject(username).getString("role"));
+			//Roles role = Roles.USER;
 			try {
 				Account acc = new Account(username, password);
 				acc.setRole(role);

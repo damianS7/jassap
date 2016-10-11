@@ -14,31 +14,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.jassap.chat;
+package com.jassap.network.packets;
 
-/**
- * Comandos disponibles para utilizar en el chat
- * @author danjian
- */
-public enum Commands {
-	SHUTDOWN_SERVER,
-	RESTART_SERVER,
-	KICK_ROOM,
-	KICK_USER,
-	BAN_USER,
-	MUTE_ROOM,
-	MUTE_USER;
+public class Mute extends Kick {
+	private static final long serialVersionUID = 5676733841365806194L;
+	private int time;
 	
-	public boolean usableCommand(Roles role, Commands cmd) {
-		if(role == Roles.ADMIN) {
-			return true;
-		}
-		
-		if(role == Roles.ADMIN) {
-			return true;
-		}
-		
-		return false;
+	public Mute(String kickedBy, String target, String reason, String room,
+			int time) {
+		super(kickedBy, target, reason, room);
+		this.time = time;
 	}
 	
+	
+	public int getTime() {
+		return time;
+	}
 }

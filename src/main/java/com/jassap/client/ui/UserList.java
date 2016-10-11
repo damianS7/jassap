@@ -16,14 +16,19 @@
  */
 package com.jassap.client.ui;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 
+import com.jassap.chat.Roles;
 import com.jassap.client.JassapClient;
+import com.jassap.server.JassapServer;
 
 /**
  * Lista para los usuarios de las salas que implementa eventos para abrir
@@ -38,12 +43,69 @@ public class UserList extends JassapList {
 	private JPopupMenu menu;
 	private List<String> users = new ArrayList<String>();
 	
-	public UserList() {
+	public UserList(String room) {
 		super();
 		menu = new JPopupMenu();
 		menu.addMouseListener(this);
-		JMenuItem item1 = new JMenuItem("Item");
-		menu.add(item1);
+		JMenuItem kick = new JMenuItem("Kick");
+		kick.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String reason = JOptionPane.showInputDialog(null,
+						"Reason?", "Ok",
+						JOptionPane.YES_NO_OPTION);
+				
+				if (reason != null) {
+					String user = getModel().getElementAt(getSelectedIndex());
+					
+					JassapClient.client.kick(room, user, reason);
+				}
+			}
+		});
+		
+		JMenuItem ban = new JMenuItem("Ban");
+		ban.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String time = JOptionPane.showInputDialog(null,
+						"Ban time?", "Ban",
+						JOptionPane.YES_NO_OPTION);
+				
+				String reason = JOptionPane.showInputDialog(null,
+						"Reason?", "Ok",
+						JOptionPane.YES_NO_OPTION);
+				
+				if (time != null && reason != null) {
+					int t = Integer.parseInt(time);
+					String user = getModel().getElementAt(getSelectedIndex());
+					
+					JassapClient.client.ban(room, user, t, reason);
+				}
+			}
+		});
+		JMenuItem mute = new JMenuItem("Mute");
+		mute.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String time = JOptionPane.showInputDialog(null,
+						"Ban time?", "Ban",
+						JOptionPane.YES_NO_OPTION);
+				
+				String reason = JOptionPane.showInputDialog(null,
+						"Reason?", "Ok",
+						JOptionPane.YES_NO_OPTION);
+				
+				if (time != null && reason != null) {
+					int t = Integer.parseInt(time);
+					String user = getModel().getElementAt(getSelectedIndex());
+					
+					JassapClient.client.mute(room, user, t, reason);
+				}
+			}
+		});
+		menu.add(ban);
+		menu.add(kick);
+		menu.add(mute);
 	}
 	
 	public void addUser(String username) {
@@ -63,11 +125,15 @@ public class UserList extends JassapList {
 	}
 	
 	private void showPopupMenu(MouseEvent e) {
+		if(JassapClient.client.getClientUser().getAccount().getRole()
+				== Roles.USER) {
+			return;
+		}
+		
 		if (e.isPopupTrigger()) {
 			// Numero de fila donde esta el puntero
 			//int row = model.rowAtPoint(e.getPoint());
 			setSelectedIndex(locationToIndex(e.getPoint()));
-			System.out.println("Actions over: " + getModel().getElementAt(getSelectedIndex()));
 			menu.show(e.getComponent(), e.getX(), e.getY());
 		}
 	}

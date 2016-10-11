@@ -46,6 +46,30 @@ public class Room {
 	public Room(String name) {
 		this(name, "", 200);
 	}
+	
+	public void kick(User user, String kickedBy, String kicked, String reason) {
+		String message = kickedBy + " kick " + kicked + " reason: " + reason;
+		difusion("System", message);
+		removeUser(user);
+	}
+	
+	public void mute(String mutedBy, String muted, String reason, int time) {
+		String message = mutedBy + " muted " + muted + " reason: " + reason 
+				+ ". time: " + time;
+		
+		difusion("System", message);
+		Mute m = new Mute(muted, time);
+		mutedBans.add(m);
+	}
+	
+	public void ban(String bannedBy, String banned, String reason, int time) {
+		String message = bannedBy + " muted " + banned + " reason: " + reason 
+				+ ". time: " + time;
+		
+		difusion("System", message);
+		Mute m = new Mute(banned, time);
+		mutedBans.add(m);
+	}
 
 	/**
 	 * Mensaje para toda la sala

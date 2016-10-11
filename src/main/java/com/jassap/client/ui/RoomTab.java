@@ -37,7 +37,7 @@ public class RoomTab extends TabChat {
 
 	public RoomTab(String title) {
 		super(title);
-		list = new UserList();
+		list = new UserList(getTitle());
 		outputBox.setEditable(false);
 		setLayout(new MigLayout("", "[332px,grow][100px]", "[202px,grow][80px]"));
 
